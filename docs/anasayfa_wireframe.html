@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PazarYeri - Ana Sayfa Wireframe (1. Hafta Teslimatı)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        body {
+            background-color: #f1f5f9;
+            color: #334155;
+            padding: 24px;
+        }
+        .header-info {
+            max-width: 1200px;
+            margin: 0 auto 20px;
+            padding: 16px 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-info h1 {
+            font-size: 18px;
+            color: #0f172a;
+        }
+        .header-info p {
+            font-size: 13px;
+            color: #64748b;
+        }
+        .print-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .wireframe-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            border: 2px dashed #94a3b8;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        /* Top Bar */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 24px;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            gap: 20px;
+        }
+        .logo-box {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1e293b;
+            padding: 6px 14px;
+            border: 2px solid #0f172a;
+            border-radius: 6px;
+            letter-spacing: -0.5px;
+        }
+        .search-bar {
+            flex: 1;
+            display: flex;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #64748b;
+        }
+        .search-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0 20px;
+            font-weight: 600;
+        }
+        .nav-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        .action-box {
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        /* Sub Nav */
+        .categories-bar {
+            display: flex;
+            gap: 20px;
+            padding: 10px 24px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #475569;
+        }
+        .cat-item.active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            padding-bottom: 2px;
+        }
+        /* Hero Banner */
+        .hero-banner {
+            margin: 20px 24px;
+            height: 240px;
+            background: #e2e8f0;
+            border: 2px dashed #94a3b8;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            position: relative;
+        }
+        .hero-banner h2 {
+            font-size: 26px;
+            color: #1e293b;
+        }
+        .hero-banner p {
+            color: #64748b;
+            font-size: 15px;
+        }
+        .banner-dots {
+            position: absolute;
+            bottom: 12px;
+            display: flex;
+            gap: 8px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #94a3b8;
+        }
+        .dot.active {
+            background: #2563eb;
+            width: 24px;
+            border-radius: 5px;
+        }
+        /* Category Badges */
+        .category-bubbles {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 24px 20px;
+            gap: 12px;
+        }
+        .cat-bubble {
+            flex: 1;
+            padding: 14px 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #334155;
+        }
+        .cat-icon {
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+        /* Section Titles */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+        .section-header h3 {
+            font-size: 18px;
+            color: #0f172a;
+        }
+        .section-header a {
+            color: #2563eb;
+            font-size: 13px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            padding: 0 24px 24px;
+        }
+        .product-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .product-img-placeholder {
+            height: 140px;
+            background: #f1f5f9;
+            border: 1px dashed #cbd5e1;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .seller-tag {
+            font-size: 11px;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .product-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+            line-height: 1.3;
+        }
+        .product-rating {
+            font-size: 12px;
+            color: #f59e0b;
+        }
+        .product-price {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-top: auto;
+        }
+        .btn-add-cart {
+            background: #0f172a;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+        }
+        /* Seller Showcase */
+        .seller-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 0 24px 24px;
+        }
+        .seller-card {
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .seller-avatar {
+            width: 48px;
+            height: 48px;
+            background: #e2e8f0;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .seller-info h4 {
+            font-size: 14px;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+        .seller-info p {
+            font-size: 12px;
+            color: #64748b;
+        }
+        /* Footer */
+        .footer-wireframe {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 30px 24px;
+            font-size: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .footer-col h5 {
+            color: #ffffff;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .footer-bottom {
+            background: #020617;
+            color: #64748b;
+            padding: 14px 24px;
+            font-size: 11px;
+            text-align: center;
+            border-top: 1px solid #1e293b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-info">
+        <div>
+            <h1>📐 PazarYeri - Ana Sayfa Wireframe (Tel Kafes Tasarımı)</h1>
+            <p>1. Hafta Teslimatı: Figma / Arayüz Mimarisi Şeması</p>
+        </div>
+        <button class="print-btn" onclick="window.print()">🖨️ PDF / Yazdır</button>
+    </div>
+
+    <div class="wireframe-container">
+        <!-- TOP NAVIGATION -->
+        <header class="top-nav">
+            <div class="logo-box">🛒 PazarYeri</div>
+            <div class="search-bar">
+                <input type="text" class="search-input" value="iPhone 15, spor ayakkabı, Philips kahve makinesi..." readonly>
+                <button class="search-btn">Ara</button>
+            </div>
+            <div class="nav-actions">
+                <div class="action-box">❤️ Favorilerim (0)</div>
+                <div class="action-box">🛒 Sepetim (2)</div>
+                <div class="action-box">👤 Giriş / Kayıt</div>
+            </div>
+        </header>
+
+        <!-- CATEGORY NAVIGATION -->
+        <nav class="categories-bar">
+            <span class="cat-item active">📂 Tüm Kategoriler ▾</span>
+            <span class="cat-item">Elektronik</span>
+            <span class="cat-item">Giyim & Moda</span>
+            <span class="cat-item">Ev & Yaşam</span>
+            <span class="cat-item">Spor & Outdoor</span>
+            <span class="cat-item">Kozmetik</span>
+            <span class="cat-item">Günün Fırsatları 🔥</span>
+            <span class="cat-item" style="margin-left: auto; color: #16a34a;">🏪 Mağaza Aç (Satıcı Ol)</span>
+        </nav>
+
+        <!-- HERO SLIDER BANNER -->
+        <section class="hero-banner">
+            <h2>BÜYÜK BAHAR KAMPANYASI BAŞLADI</h2>
+            <p>Elektronik ve Modada Seçili Ürünlerde %50'ye Varan İndirimler</p>
+            <div class="action-box" style="background: #2563eb; color: white; border: none; padding: 10px 20px;">Hemen İncele &gt;</div>
+            <div class="banner-dots">
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </section>
+
+        <!-- QUICK CATEGORY BUBBLES -->
+        <section class="category-bubbles">
+            <div class="cat-bubble"><div class="cat-icon">📱</div>Telefon & Aksesuar</div>
+            <div class="cat-bubble"><div class="cat-icon">💻</div>Bilgisayar & Tablet</div>
+            <div class="cat-bubble"><div class="cat-icon">👗</div>Kadın Giyim</div>
+            <div class="cat-bubble"><div class="cat-icon">👕</div>Erkek Giyim</div>
+            <div class="cat-bubble"><div class="cat-icon">👟</div>Ayakkabı & Çanta</div>
+            <div class="cat-bubble"><div class="cat-icon">🛋️</div>Mobilya & Dekorasyon</div>
+            <div class="cat-bubble"><div class="cat-icon">☕</div>Mutfak Gereçleri</div>
+        </section>
+
+        <!-- GÜNÜN FIRSATLARI -->
+        <div class="section-header">
+            <h3>🔥 Günün Fırsatları (Sınırlı Stok)</h3>
+            <a href="#">Tümünü Gör (100 Ürün) &gt;</a>
+        </div>
+
+        <section class="product-grid">
+            <div class="product-card">
+                <div class="product-img-placeholder">[ Ürün Görseli / Media ]</div>
+                <span class="seller-tag">Mağaza: Teknoloji Dünyası</span>
+                <span class="product-name">Apple iPhone 15 Pro Max 256GB</span>
+                <span class="product-rating">★★★★★ (4.9)</span>
+                <span class="product-price">74.999,00 TL</span>
+                <button class="btn-add-cart">Sepete Ekle</button>
+            </div>
+            <div class="product-card">
+                <div class="product-img-placeholder">[ Ürün Görseli / Media ]</div>
+                <span class="seller-tag">Mağaza: Sporium Outdoor</span>
+                <span class="product-name">Nike Air Zoom Pegasus Koşu Ayakkabısı</span>
+                <span class="product-rating">★★★★☆ (4.7)</span>
+                <span class="product-price">3.899,00 TL</span>
+                <button class="btn-add-cart">Sepete Ekle</button>
+            </div>
+            <div class="product-card">
+                <div class="product-img-placeholder">[ Ürün Görseli / Media ]</div>
+                <span class="seller-tag">Mağaza: Ev & Yaşam Konsept</span>
+                <span class="product-name">Philips Airfryer XXL Sıcak Hava Fritözü</span>
+                <span class="product-rating">★★★★★ (5.0)</span>
+                <span class="product-price">5.999,00 TL</span>
+                <button class="btn-add-cart">Sepete Ekle</button>
+            </div>
+            <div class="product-card">
+                <div class="product-img-placeholder">[ Ürün Görseli / Media ]</div>
+                <span class="seller-tag">Mağaza: Moda Trend</span>
+                <span class="product-name">Zara Kruvaze Yünlü Kadın Kaban</span>
+                <span class="product-rating">★★★★☆ (4.6)</span>
+                <span class="product-price">3.999,00 TL</span>
+                <button class="btn-add-cart">Sepete Ekle</button>
+            </div>
+        </section>
+
+        <!-- ÖNE ÇIKAN PAZARYERİ MAĞAZALARI -->
+        <div class="section-header">
+            <h3>🏪 Öne Çıkan Satıcı Mağazaları</h3>
+            <a href="#">Tüm Satıcılar &gt;</a>
+        </div>
+
+        <section class="seller-grid">
+            <div class="seller-card">
+                <div class="seller-avatar">📱</div>
+                <div class="seller-info">
+                    <h4>Teknoloji Dünyası A.Ş.</h4>
+                    <p>⭐ 9.8 Mağaza Puanı | 140+ Ürün</p>
+                </div>
+            </div>
+            <div class="seller-card">
+                <div class="seller-avatar">👗</div>
+                <div class="seller-info">
+                    <h4>Moda & Trend Mağazacılık</h4>
+                    <p>⭐ 9.6 Mağaza Puanı | 95+ Ürün</p>
+                </div>
+            </div>
+            <div class="seller-card">
+                <div class="seller-avatar">🏡</div>
+                <div class="seller-info">
+                    <h4>Ev & Yaşam Konsept</h4>
+                    <p>⭐ 9.5 Mağaza Puanı | 60+ Ürün</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer-wireframe">
+            <div class="footer-col">
+                <h5>Kurumsal</h5>
+                <ul>
+                    <li>Hakkımızda</li>
+                    <li>Kariyer</li>
+                    <li>Satıcı Olmak İstiyorum</li>
+                    <li>İletişim</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Müşteri Hizmetleri</h5>
+                <ul>
+                    <li>Sıkça Sorulan Sorular</li>
+                    <li>Kargo ve Teslimat</li>
+                    <li>14 Gün Kolay İade</li>
+                    <li>Sipariş Takibi</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Güvenlik & Sözleşmeler</h5>
+                <ul>
+                    <li>KVKK Aydınlatma Metni</li>
+                    <li>Mesafeli Satış Sözleşmesi</li>
+                    <li>Kullanıcı Sözleşmesi</li>
+                    <li>Çerez Politikası</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Güvenli Alışveriş</h5>
+                <ul>
+                    <li>🔒 256-bit SSL Güvenlik</li>
+                    <li>💳 3D Secure ile Ödeme</li>
+                    <li>🛡️ Satıcı Güvence Sistemi</li>
+                    <li>📦 Hasarsız Teslimat Garantisi</li>
+                </ul>
+            </div>
+        </footer>
+        <div class="footer-bottom">
+            © 2026 PazarYeri Çok Satıcılı E-Ticaret Platformu. Tüm hakları saklıdır.
+        </div>
+    </div>
+
+</body>
+</html>
