@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" width="1200" height="1600" style="background:#f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <!-- Header Info -->
+  <rect x="0" y="0" width="1200" height="70" fill="#0f172a"/>
+  <text x="40" y="42" fill="#ffffff" font-size="20" font-weight="bold">PAZARYERI - ANA SAYFA WIREFRAME (TEL KAFES TASARIMI)</text>
+  <text x="1000" y="42" fill="#94a3b8" font-size="14">Hafta 1 Teslimati</text>
+
+  <!-- TOP BAR -->
+  <rect x="40" y="90" width="1120" height="70" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+  <!-- Logo -->
+  <rect x="60" y="105" width="140" height="40" rx="6" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+  <text x="85" y="130" fill="#0f172a" font-size="16" font-weight="bold">🛒 PazarYeri</text>
+  <!-- Search Bar -->
+  <rect x="220" y="105" width="560" height="40" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="240" y="130" fill="#64748b" font-size="14">🔍 Urun, kategori veya magaza ara...</text>
+  <rect x="700" y="105" width="80" height="40" rx="6" fill="#2563eb"/>
+  <text x="725" y="130" fill="#ffffff" font-size="14" font-weight="bold">Ara</text>
+  <!-- Actions -->
+  <rect x="800" y="105" width="100" height="40" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="815" y="130" fill="#334155" font-size="13" font-weight="600">❤️ Favoriler</text>
+  <rect x="910" y="105" width="100" height="40" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="925" y="130" fill="#334155" font-size="13" font-weight="600">🛒 Sepet (2)</text>
+  <rect x="1020" y="105" width="120" height="40" rx="6" fill="#0f172a"/>
+  <text x="1040" y="130" fill="#ffffff" font-size="13" font-weight="600">👤 Giris Yap</text>
+
+  <!-- NAVIGATION BAR -->
+  <rect x="40" y="175" width="1120" height="45" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="60" y="203" fill="#2563eb" font-size="14" font-weight="bold">📂 Tum Kategoriler ▾</text>
+  <text x="230" y="203" fill="#475569" font-size="14">Elektronik</text>
+  <text x="330" y="203" fill="#475569" font-size="14">Giyim &amp; Moda</text>
+  <text x="450" y="203" fill="#475569" font-size="14">Ev &amp; Yasam</text>
+  <text x="560" y="203" fill="#475569" font-size="14">Spor &amp; Outdoor</text>
+  <text x="690" y="203" fill="#475569" font-size="14">Kozmetik</text>
+  <text x="780" y="203" fill="#dc2626" font-size="14" font-weight="bold">Firsatlar 🔥</text>
+  <text x="1010" y="203" fill="#16a34a" font-size="14" font-weight="bold">🏪 Magaza Ac</text>
+
+  <!-- HERO SLIDER BANNER -->
+  <rect x="40" y="235" width="1120" height="230" rx="10" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6 6"/>
+  <text x="600" y="320" text-anchor="middle" fill="#0f172a" font-size="28" font-weight="bold">BUYUK BAHAR KAMPANYASI BASLADI</text>
+  <text x="600" y="360" text-anchor="middle" fill="#475569" font-size="16">Secili Elektronik ve Moda Urunlerinde %%50'ye Varan Indirimler</text>
+  <rect x="520" y="385" width="160" height="40" rx="6" fill="#2563eb"/>
+  <text x="600" y="410" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">Hemen Kesfet &gt;</text>
+  <!-- Dots -->
+  <circle cx="580" cy="445" r="5" fill="#2563eb"/>
+  <circle cx="600" cy="445" r="5" fill="#94a3b8"/>
+  <circle cx="620" cy="445" r="5" fill="#94a3b8"/>
+
+  <!-- CATEGORY QUICK LINKS -->
+  <g transform="translate(40, 480)">
+    <!-- 1 -->
+    <rect x="0" y="0" width="145" height="70" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="72" y="32" text-anchor="middle" font-size="20">📱</text>
+    <text x="72" y="55" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600">Telefon</text>
+    <!-- 2 -->
+    <rect x="162" y="0" width="145" height="70" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="234" y="32" text-anchor="middle" font-size="20">💻</text>
+    <text x="234" y="55" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600">Bilgisayar</text>
+    <!-- 3 -->
+    <rect x="325" y="0" width="145" height="70" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="397" y="32" text-anchor="middle" font-size="20">👗</text>
+    <text x="397" y="55" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600">Kadin Giyim</text>
+    <!-- 4 -->
+    <rect x="487" y="0" width="145" height="70" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="559" y="32" text-anchor="middle" font-size="20">👕</text>
+    <text x="559" y="55" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600">Erkek Giyim</text>
+    <!-- 5 -->
+    <rect x="650" y="0" width="145" height="70" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="722" y="32" text-anchor="middle" font-size="20">👟</text>
+    <text x="722" y="55" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600">Ayakkabi</text>
+    <!-- 6 -->
+    <rect x="812" y="0" width="145" height="70" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="884" y="32" text-anchor="middle" font-size="20">🛋️</text>
+    <text x="884" y="55" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600">Mobilya</text>
+    <!-- 7 -->
+    <rect x="975" y="0" width="145" height="70" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <text x="1047" y="32" text-anchor="middle" font-size="20">☕</text>
+    <text x="1047" y="55" text-anchor="middle" fill="#1e293b" font-size="12" font-weight="600">Mutfak</text>
+  </g>
+
+  <!-- PRODUCTS SECTION: GUNUN FIRSATLARI -->
+  <text x="40" y="590" fill="#0f172a" font-size="20" font-weight="bold">🔥 Gunun Firsatlari (Sinirli Stok)</text>
+  <text x="1080" y="590" text-anchor="end" fill="#2563eb" font-size="14" font-weight="600">Tumunu Gor &gt;</text>
+
+  <!-- 4 Product Cards Grid -->
+  <g transform="translate(40, 610)">
+    <!-- Card 1 -->
+    <rect x="0" y="0" width="265" height="340" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="15" y="15" width="235" height="150" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="132" y="95" text-anchor="middle" fill="#94a3b8" font-size="14">[ Urun Gorseli / Media ]</text>
+    <text x="15" y="185" fill="#64748b" font-size="12">Satici: Teknoloji Dunyasi</text>
+    <text x="15" y="210" fill="#0f172a" font-size="15" font-weight="bold">iPhone 15 Pro Max 256GB</text>
+    <text x="15" y="235" fill="#f59e0b" font-size="13">★★★★★ (4.9)</text>
+    <text x="15" y="270" fill="#0f172a" font-size="18" font-weight="800">74.999,00 TL</text>
+    <rect x="15" y="290" width="235" height="35" rx="6" fill="#0f172a"/>
+    <text x="132" y="312" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="bold">Sepete Ekle</text>
+
+    <!-- Card 2 -->
+    <rect x="285" y="0" width="265" height="340" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="300" y="15" width="235" height="150" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="417" y="95" text-anchor="middle" fill="#94a3b8" font-size="14">[ Urun Gorseli / Media ]</text>
+    <text x="300" y="185" fill="#64748b" font-size="12">Satici: Sporium Outdoor</text>
+    <text x="300" y="210" fill="#0f172a" font-size="15" font-weight="bold">Nike Air Zoom Pegasus</text>
+    <text x="300" y="235" fill="#f59e0b" font-size="13">★★★★☆ (4.7)</text>
+    <text x="300" y="270" fill="#0f172a" font-size="18" font-weight="800">3.899,00 TL</text>
+    <rect x="300" y="290" width="235" height="35" rx="6" fill="#0f172a"/>
+    <text x="417" y="312" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="bold">Sepete Ekle</text>
+
+    <!-- Card 3 -->
+    <rect x="570" y="0" width="265" height="340" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="585" y="15" width="235" height="150" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="702" y="95" text-anchor="middle" fill="#94a3b8" font-size="14">[ Urun Gorseli / Media ]</text>
+    <text x="585" y="185" fill="#64748b" font-size="12">Satici: Ev &amp; Yasam Konsept</text>
+    <text x="585" y="210" fill="#0f172a" font-size="15" font-weight="bold">Philips Airfryer XXL</text>
+    <text x="585" y="235" fill="#f59e0b" font-size="13">★★★★★ (5.0)</text>
+    <text x="585" y="270" fill="#0f172a" font-size="18" font-weight="800">5.999,00 TL</text>
+    <rect x="585" y="290" width="235" height="35" rx="6" fill="#0f172a"/>
+    <text x="702" y="312" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="bold">Sepete Ekle</text>
+
+    <!-- Card 4 -->
+    <rect x="855" y="0" width="265" height="340" rx="8" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="870" y="15" width="235" height="150" rx="6" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="987" y="95" text-anchor="middle" fill="#94a3b8" font-size="14">[ Urun Gorseli / Media ]</text>
+    <text x="870" y="185" fill="#64748b" font-size="12">Satici: Moda Trend</text>
+    <text x="870" y="210" fill="#0f172a" font-size="15" font-weight="bold">Zara Kruvaze Kadın Kaban</text>
+    <text x="870" y="235" fill="#f59e0b" font-size="13">★★★★☆ (4.6)</text>
+    <text x="870" y="270" fill="#0f172a" font-size="18" font-weight="800">3.999,00 TL</text>
+    <rect x="870" y="290" width="235" height="35" rx="6" fill="#0f172a"/>
+    <text x="987" y="312" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="bold">Sepete Ekle</text>
+  </g>
+
+  <!-- SELLERS SECTION -->
+  <text x="40" y="990" fill="#0f172a" font-size="20" font-weight="bold">🏪 One Cikan Pazaryeri Magazalari</text>
+  <g transform="translate(40, 1010)">
+    <!-- Seller 1 -->
+    <rect x="0" y="0" width="355" height="90" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <circle cx="50" cy="45" r="25" fill="#e2e8f0"/>
+    <text x="50" y="52" text-anchor="middle" font-size="20">📱</text>
+    <text x="90" y="38" fill="#0f172a" font-size="16" font-weight="bold">Teknoloji Dunyasi A.S.</text>
+    <text x="90" y="62" fill="#64748b" font-size="13">⭐ 9.8 Magaza Puani | 140+ Urun</text>
+
+    <!-- Seller 2 -->
+    <rect x="382" y="0" width="355" height="90" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <circle cx="432" cy="45" r="25" fill="#e2e8f0"/>
+    <text x="432" y="52" text-anchor="middle" font-size="20">👗</text>
+    <text x="472" y="38" fill="#0f172a" font-size="16" font-weight="bold">Moda &amp; Trend Magazacilik</text>
+    <text x="472" y="62" fill="#64748b" font-size="13">⭐ 9.6 Magaza Puani | 95+ Urun</text>
+
+    <!-- Seller 3 -->
+    <rect x="765" y="0" width="355" height="90" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+    <circle cx="815" cy="45" r="25" fill="#e2e8f0"/>
+    <text x="815" y="52" text-anchor="middle" font-size="20">🏡</text>
+    <text x="855" y="38" fill="#0f172a" font-size="16" font-weight="bold">Ev &amp; Yasam Konsept</text>
+    <text x="855" y="62" fill="#64748b" font-size="13">⭐ 9.5 Magaza Puani | 60+ Urun</text>
+  </g>
+
+  <!-- FOOTER -->
+  <rect x="0" y="1140" width="1200" height="460" fill="#0f172a"/>
+  <!-- Footer Columns -->
+  <g transform="translate(60, 1180)" fill="#94a3b8" font-size="13">
+    <!-- Col 1 -->
+    <text x="0" y="0" fill="#ffffff" font-size="16" font-weight="bold">Kurumsal</text>
+    <text x="0" y="35">Hakkimizda</text>
+    <text x="0" y="65">Kariyer</text>
+    <text x="0" y="95">Satici Olmak Istiyorum</text>
+    <text x="0" y="125">Iletisim</text>
+
+    <!-- Col 2 -->
+    <text x="280" y="0" fill="#ffffff" font-size="16" font-weight="bold">Musteri Hizmetleri</text>
+    <text x="280" y="35">Sikca Sorulan Sorular</text>
+    <text x="280" y="65">Kargo ve Teslimat</text>
+    <text x="280" y="95">14 Gun Kolay Iade</text>
+    <text x="280" y="125">Siparis Takibi</text>
+
+    <!-- Col 3 -->
+    <text x="560" y="0" fill="#ffffff" font-size="16" font-weight="bold">Guvenlik &amp; Sozlesmeler</text>
+    <text x="560" y="35">KVKK Aydinlatma Metni</text>
+    <text x="560" y="65">Mesafeli Satis Sozlesmesi</text>
+    <text x="560" y="95">Kullanici Sozlesmesi</text>
+    <text x="560" y="125">Cerez Politikasi</text>
+
+    <!-- Col 4 -->
+    <text x="840" y="0" fill="#ffffff" font-size="16" font-weight="bold">Guvenli Alisveris</text>
+    <text x="840" y="35">🔒 256-bit SSL Guvenlik</text>
+    <text x="840" y="65">💳 3D Secure ile Odeme</text>
+    <text x="840" y="95">🛡️ Satici Guvence Sistemi</text>
+    <text x="840" y="125">📦 Hasarsiz Teslimat</text>
+  </g>
+
+  <!-- Copyright -->
+  <line x1="60" y1="1350" x2="1140" y2="1350" stroke="#334155" stroke-width="1"/>
+  <text x="600" y="1390" text-anchor="middle" fill="#64748b" font-size="12">© 2026 PazarYeri Cok Saticili E-Ticaret Platformu. Tum haklari saklidir.</text>
+</svg>
