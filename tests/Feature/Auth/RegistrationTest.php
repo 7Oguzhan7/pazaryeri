@@ -7,7 +7,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
-use Livewire\Volt\Volt;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
@@ -20,7 +20,7 @@ class RegistrationTest extends TestCase
 
         $response
             ->assertOk()
-            ->assertSeeVolt('pages.auth.register');
+            ->assertInertia(fn (Assert $page) => $page->component('Auth/Register'));
     }
 
     public function test_new_users_can_register(): void
@@ -28,15 +28,12 @@ class RegistrationTest extends TestCase
         $this->seed(RoleSeeder::class);
         Notification::fake();
 
-        $component = Volt::test('pages.auth.register')
-            ->set('name', 'Test User')
-            ->set('email', 'test@example.com')
-            ->set('password', 'password')
-            ->set('password_confirmation', 'password');
-
-        $component->call('register');
-
-        $component->assertRedirect(route('dashboard', absolute: false));
+        $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ])->assertRedirect(route('dashboard', absolute: false));
 
         $this->assertAuthenticated();
         $user = User::query()->where('email', 'test@example.com')->firstOrFail();

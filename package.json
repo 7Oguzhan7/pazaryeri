@@ -9,14 +9,21 @@
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
         "@tailwindcss/vite": "^4.0.0",
+        "@vitejs/plugin-react": "^6.2.1",
         "autoprefixer": "^10.4.2",
         "concurrently": "^10.0.3",
         "laravel-vite-plugin": "^3.1",
         "postcss": "^8.4.31",
-        "tailwindcss": "^3.1.0",
+        "tailwindcss": "^4.3.3",
         "vite": "^8.0.0"
     },
     "optionalDependencies": {
         "@laravel/multiplex": "^0.4.1"
+    },
+    "dependencies": {
+        "@inertiajs/react": "^3.11.0",
+        "@inertiajs/vite": "^3.11.0",
+        "react": "^19.3.1",
+        "react-dom": "^19.3.1"
     }
 }

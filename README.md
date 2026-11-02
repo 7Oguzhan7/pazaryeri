@@ -1,6 +1,6 @@
 # 🛒 PazarYeri - Çok Satıcılı E-Ticaret Platformu
 
-Amazon ve Hepsiburada benzeri, çok satıcılı (multi-vendor) mimariye sahip modern bir e-ticaret platformudur. Proje Laravel 13, PHP 8.3+ ve Livewire kullanılarak geliştirilmektedir. Yeni kurulumlarda SQLite kullanılır; istenirse `.env` üzerinden MySQL veya PostgreSQL yapılandırılabilir.
+Amazon ve Hepsiburada benzeri, çok satıcılı (multi-vendor) mimariye sahip modern bir e-ticaret platformudur. Proje Laravel 13 ve PHP 8.3+ ile geliştirilir; arayüz Inertia.js ve React kullanır. Yeni kurulumlarda SQLite kullanılır; istenirse `.env` üzerinden MySQL veya PostgreSQL yapılandırılabilir.
 
 ---
 
@@ -57,6 +57,9 @@ Amazon ve Hepsiburada benzeri, çok satıcılı (multi-vendor) mimariye sahip mo
    ```
    Tarayıcınızda `http://127.0.0.1:8000` adresini açın.
 
+6. **React arayüzünü geliştirme modunda çalıştırın (isteğe bağlı):**
+   Ayrı bir terminalde `npm run dev` komutunu çalıştırın. Üretim derlemesi için `npm run build` kullanılır.
+
 ---
 
 ## 🔑 Demo & Test Kullanıcı Hesapları
@@ -79,7 +82,7 @@ Tüm test hesaplarının şifresi varsayılan olarak **`password123`** olarak ay
 * Roller `admin`, `seller` ve `customer` adlarıyla tutulur. Eski Türkçe rol kayıtları `RoleSeeder` tarafından güvenle bu adlara taşınır.
 * `/admin` ve `/admin/categories` yalnızca yöneticiye; `/satici` ise yalnızca onaylanmış satıcıya açıktır.
 * Kategori yönetimi üst kategori, slug, sıralama ve komisyon oranı alanlarını destekler. Ürünü veya alt kategorisi olan kayıtlar silinemez.
-* Ana sayfa, giriş/kayıt ve oturum açmış sayfalar ortak mağaza başlığını ve alt bilgisini kullanır; kategori menüsü veritabanından yüklenir.
+* Ana sayfa, kimlik doğrulama, profil, müşteri/satıcı panelleri ve yönetim/kategori sayfaları React + Inertia ile sunulur; kategori menüsü veritabanından yüklenir.
 
 ### E-posta doğrulamayı Mailpit ile deneme
 

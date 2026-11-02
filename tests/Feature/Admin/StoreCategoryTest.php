@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class StoreCategoryTest extends TestCase
@@ -26,11 +27,13 @@ class StoreCategoryTest extends TestCase
         $this->actingAs($admin)
             ->get('/admin/categories')
             ->assertOk()
-            ->assertSeeText('Elektronik');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Admin/Categories/Index')
+                ->where('categories.data.0.name', 'Elektronik'));
 
         $this->get('/admin/categories/create')
             ->assertOk()
-            ->assertSeeText('Yeni kategori oluştur');
+            ->assertInertia(fn (Assert $page) => $page->component('Admin/Categories/Create'));
     }
 
     public function test_admin_can_create_a_category_with_a_parent_and_slug(): void

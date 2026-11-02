@@ -4,7 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Volt\Volt;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class PasswordConfirmationTest extends TestCase
@@ -18,8 +18,8 @@ class PasswordConfirmationTest extends TestCase
         $response = $this->actingAs($user)->get('/confirm-password');
 
         $response
-            ->assertSeeVolt('pages.auth.confirm-password')
-            ->assertStatus(200);
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page->component('Auth/ConfirmPassword'));
     }
 
     public function test_password_can_be_confirmed(): void
@@ -28,14 +28,11 @@ class PasswordConfirmationTest extends TestCase
 
         $this->actingAs($user);
 
-        $component = Volt::test('pages.auth.confirm-password')
-            ->set('password', 'password');
+        $response = $this->post('/confirm-password', ['password' => 'password']);
 
-        $component->call('confirmPassword');
-
-        $component
+        $response
             ->assertRedirect('/dashboard')
-            ->assertHasNoErrors();
+            ->assertSessionHas('auth.password_confirmed_at');
     }
 
     public function test_password_is_not_confirmed_with_invalid_password(): void
@@ -44,13 +41,9 @@ class PasswordConfirmationTest extends TestCase
 
         $this->actingAs($user);
 
-        $component = Volt::test('pages.auth.confirm-password')
-            ->set('password', 'wrong-password');
-
-        $component->call('confirmPassword');
-
-        $component
-            ->assertNoRedirect()
-            ->assertHasErrors('password');
+        $this->from('/confirm-password')
+            ->post('/confirm-password', ['password' => 'wrong-password'])
+            ->assertRedirect('/confirm-password')
+            ->assertSessionHasErrors('password');
     }
 }

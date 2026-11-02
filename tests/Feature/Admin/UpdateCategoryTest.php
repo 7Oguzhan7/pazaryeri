@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class UpdateCategoryTest extends TestCase
@@ -31,7 +32,9 @@ class UpdateCategoryTest extends TestCase
         $this->actingAs($admin)
             ->get("/admin/categories/{$category->id}/edit")
             ->assertOk()
-            ->assertSeeText('Kategori düzenle');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Admin/Categories/Edit')
+                ->where('category.id', $category->id));
 
         $response = $this->actingAs($admin)->put("/admin/categories/{$category->id}", [
             'name' => 'Cep Telefonları',

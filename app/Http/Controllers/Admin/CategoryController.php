@@ -9,12 +9,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreCategoryRequest;
 use App\Http\Requests\Admin\UpdateCategoryRequest;
 use App\Models\Category;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class CategoryController extends Controller
 {
-    public function index(): View
+    public function index(): Response
     {
         $categories = Category::query()
             ->with('parent')
@@ -23,10 +24,12 @@ class CategoryController extends Controller
             ->orderBy('name')
             ->paginate(20);
 
-        return view('admin.categories.index', compact('categories'));
+        return Inertia::render('Admin/Categories/Index', [
+            'categories' => $categories,
+        ]);
     }
 
-    public function create(): View
+    public function create(): Response
     {
         $category = new Category;
         $parents = Category::query()
@@ -35,7 +38,10 @@ class CategoryController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.categories.create', compact('category', 'parents'));
+        return Inertia::render('Admin/Categories/Create', [
+            'category' => $category,
+            'parents' => $parents,
+        ]);
     }
 
     public function store(StoreCategoryRequest $request, CreateCategoryAction $create): RedirectResponse
@@ -47,7 +53,7 @@ class CategoryController extends Controller
             ->with('status', __('categories.created'));
     }
 
-    public function edit(Category $category): View
+    public function edit(Category $category): Response
     {
         $parents = Category::query()
             ->whereNull('parent_id')
@@ -56,7 +62,10 @@ class CategoryController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.categories.edit', compact('category', 'parents'));
+        return Inertia::render('Admin/Categories/Edit', [
+            'category' => $category,
+            'parents' => $parents,
+        ]);
     }
 
     public function update(

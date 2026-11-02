@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class StorefrontMegaMenuTest extends TestCase
@@ -26,7 +27,9 @@ class StorefrontMegaMenuTest extends TestCase
 
         $this->get('/')
             ->assertOk()
-            ->assertSeeText('Test Elektronik')
-            ->assertSeeText('Test Telefonlar');
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Storefront/Home')
+                ->where('categories.0.name', 'Test Elektronik')
+                ->where('categories.0.children.0.name', 'Test Telefonlar'));
     }
 }
