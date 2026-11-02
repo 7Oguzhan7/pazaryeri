@@ -15,6 +15,8 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,7 +25,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->command?->info("🚀 Seeder başlatılıyor: 1 Admin, 5 Satıcı, 20 Müşteri, 15 Kategori, 100 Ürün...");
+        $this->command?->info('🚀 Seeder başlatılıyor: 1 Admin, 5 Satıcı, 20 Müşteri, 15 Kategori, 100 Ürün...');
+
+        // ==========================================
+        // 0. ROLLER (Spatie Permission)
+        // ==========================================
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $adminRole = Role::firstOrCreate(['name' => 'admin',   'guard_name' => 'web']);
+        $saticiRole = Role::firstOrCreate(['name' => 'satici',  'guard_name' => 'web']);
+        $musteriRole = Role::firstOrCreate(['name' => 'musteri', 'guard_name' => 'web']);
+        $this->command?->info('✅ 3 Rol oluşturuldu: admin, satici, musteri');
 
         // ==========================================
         // 1. ADMİN OLUŞTURMA (1 Adet)
@@ -37,7 +49,7 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        $this->command?->info("✅ 1 Admin oluşturuldu: admin@pazaryeri.com (Şifre: password123)");
+        $this->command?->info('✅ 1 Admin oluşturuldu: admin@pazaryeri.com (Şifre: password123)');
 
         // ==========================================
         // 2. SATICILAR OLUŞTURMA (5 Adet)
@@ -76,7 +88,7 @@ class DatabaseSeeder extends Seeder
             );
             $sellers[] = $seller;
         }
-        $this->command?->info("✅ 5 Satıcı ve Mağazası oluşturuldu (satici1@... - satici5@...)");
+        $this->command?->info('✅ 5 Satıcı ve Mağazası oluşturuldu (satici1@... - satici5@...)');
 
         // ==========================================
         // 3. MÜŞTERİLER OLUŞTURMA (20 Adet) & ADRESLER
@@ -85,7 +97,7 @@ class DatabaseSeeder extends Seeder
             'Ahmet Yılmaz', 'Mehmet Demir', 'Ayşe Kaya', 'Fatma Çelik', 'Mustafa Şahin',
             'Emine Yıldız', 'Ali Öztürk', 'Zeynep Aydın', 'Hüseyin Özdemir', 'Hatice Arslan',
             'Murat Doğan', 'Elif Kılıç', 'İbrahim Aslan', 'Büşra Çetin', 'Hasan Kara',
-            'Seda Koç', 'Burak Kurt', 'Merve Özkan', 'Caner Şimşek', 'Gizem Polat'
+            'Seda Koç', 'Burak Kurt', 'Merve Özkan', 'Caner Şimşek', 'Gizem Polat',
         ];
 
         $cities = [
@@ -120,7 +132,7 @@ class DatabaseSeeder extends Seeder
                 ]
             );
         }
-        $this->command?->info("✅ 20 Müşteri ve teslimat adresleri oluşturuldu (musteri1@... - musteri20@...)");
+        $this->command?->info('✅ 20 Müşteri ve teslimat adresleri oluşturuldu (musteri1@... - musteri20@...)');
 
         // ==========================================
         // 4. KATEGORİLER (15 Adet - Hiyerarşik Ağaç Yapısı)
@@ -128,23 +140,23 @@ class DatabaseSeeder extends Seeder
         $categoryTree = [
             'Elektronik' => [
                 'commission_rate' => 8.00,
-                'children' => ['Telefon & Aksesuar', 'Bilgisayar & Tablet', 'Televizyon & Ses Sistemleri']
+                'children' => ['Telefon & Aksesuar', 'Bilgisayar, Tablet & TV'],
             ],
             'Giyim & Moda' => [
                 'commission_rate' => 12.00,
-                'children' => ['Kadın Giyim', 'Erkek Giyim', 'Ayakkabı & Çanta']
+                'children' => ['Kadın & Erkek Giyim', 'Ayakkabı & Çanta'],
             ],
             'Ev & Yaşam' => [
                 'commission_rate' => 10.00,
-                'children' => ['Mobilya & Dekorasyon', 'Mutfak Gereçleri']
+                'children' => ['Mobilya & Dekorasyon', 'Mutfak Gereçleri'],
             ],
             'Spor & Outdoor' => [
                 'commission_rate' => 10.00,
-                'children' => ['Fitness & Kondisyon', 'Outdoor Giyim & Kamp']
+                'children' => ['Fitness & Kondisyon', 'Outdoor Giyim & Kamp'],
             ],
             'Kozmetik & Kişisel Bakım' => [
                 'commission_rate' => 15.00,
-                'children' => ['Parfüm & Deodorant', 'Cilt Bakımı & Makyaj']
+                'children' => ['Parfüm & Deodorant', 'Cilt Bakımı & Makyaj'],
             ],
         ];
 
@@ -176,7 +188,32 @@ class DatabaseSeeder extends Seeder
                 $allCategories[] = $childCat;
             }
         }
-        $this->command?->info("✅ 15 Kategori hiyerarşik (ana/alt) olarak oluşturuldu.");
+
+        $categoryIdsByName = [];
+        foreach ($allCategories as $category) {
+            $categoryIdsByName[$category->name] = $category->id;
+        }
+
+        $mergedCategories = [
+            'Bilgisayar & Tablet' => 'Bilgisayar, Tablet & TV',
+            'Televizyon & Ses Sistemleri' => 'Bilgisayar, Tablet & TV',
+            'Kadın Giyim' => 'Kadın & Erkek Giyim',
+            'Erkek Giyim' => 'Kadın & Erkek Giyim',
+        ];
+
+        foreach ($mergedCategories as $oldName => $newName) {
+            $oldCategory = Category::where('slug', Str::slug($oldName))->first();
+            $newCategoryId = $categoryIdsByName[$newName];
+
+            if ($oldCategory !== null) {
+                Product::where('category_id', $oldCategory->id)->update([
+                    'category_id' => $newCategoryId,
+                ]);
+                $oldCategory->delete();
+            }
+        }
+
+        $this->command?->info('✅ 15 Kategori hiyerarşik (ana/alt) olarak oluşturuldu.');
 
         // ==========================================
         // 5. MARKALAR (Brands)
@@ -188,11 +225,11 @@ class DatabaseSeeder extends Seeder
                 ['slug' => Str::slug($bName)],
                 [
                     'name' => $bName,
-                    'logo' => 'brands/' . Str::slug($bName) . '.png',
+                    'logo' => 'brands/'.Str::slug($bName).'.png',
                 ]
             );
         }
-        $this->command?->info("✅ 10 Marka tanımlandı.");
+        $this->command?->info('✅ 10 Marka tanımlandı.');
 
         // ==========================================
         // 6. ÜRÜNLER (100 Adet) & VARYANTLARI (decimal(10,2) & stok)
@@ -202,19 +239,19 @@ class DatabaseSeeder extends Seeder
             ['name' => 'iPhone 15 Pro Max 256GB', 'cat' => 'Telefon & Aksesuar', 'brand' => 'Apple', 'price' => 74999.00, 'colors' => ['Naturel Titanyum', 'Siyah Titanyum', 'Mavi Titanyum']],
             ['name' => 'Galaxy S24 Ultra 512GB', 'cat' => 'Telefon & Aksesuar', 'brand' => 'Samsung', 'price' => 68499.00, 'colors' => ['Titanyum Gri', 'Titanyum Siyah']],
             ['name' => 'Redmi Note 13 Pro 256GB', 'cat' => 'Telefon & Aksesuar', 'brand' => 'Xiaomi', 'price' => 14999.00, 'colors' => ['Siyah', 'Yeşil', 'Mavi']],
-            ['name' => 'MacBook Pro 14 M3 Chip 16GB', 'cat' => 'Bilgisayar & Tablet', 'brand' => 'Apple', 'price' => 64999.00, 'colors' => ['Uzay Grisi', 'Gümüş']],
-            ['name' => 'Galaxy Tab S9 FE Android Tablet', 'cat' => 'Bilgisayar & Tablet', 'brand' => 'Samsung', 'price' => 15999.00, 'colors' => ['Gri', 'Nane Yeşili']],
-            ['name' => 'OLED 65 Inç 4K Smart TV', 'cat' => 'Televizyon & Ses Sistemleri', 'brand' => 'Sony', 'price' => 52000.00, 'colors' => ['Siyah']],
-            ['name' => 'Bluetooth ANC Kablosuz Kulaklık', 'cat' => 'Televizyon & Ses Sistemleri', 'brand' => 'Sony', 'price' => 8499.00, 'colors' => ['Siyah', 'Gümüş']],
+            ['name' => 'MacBook Pro 14 M3 Chip 16GB', 'cat' => 'Bilgisayar, Tablet & TV', 'brand' => 'Apple', 'price' => 64999.00, 'colors' => ['Uzay Grisi', 'Gümüş']],
+            ['name' => 'Galaxy Tab S9 FE Android Tablet', 'cat' => 'Bilgisayar, Tablet & TV', 'brand' => 'Samsung', 'price' => 15999.00, 'colors' => ['Gri', 'Nane Yeşili']],
+            ['name' => 'OLED 65 Inç 4K Smart TV', 'cat' => 'Bilgisayar, Tablet & TV', 'brand' => 'Sony', 'price' => 52000.00, 'colors' => ['Siyah']],
+            ['name' => 'Bluetooth ANC Kablosuz Kulaklık', 'cat' => 'Bilgisayar, Tablet & TV', 'brand' => 'Sony', 'price' => 8499.00, 'colors' => ['Siyah', 'Gümüş']],
             ['name' => 'AirPods Pro 2. Nesil USB-C', 'cat' => 'Telefon & Aksesuar', 'brand' => 'Apple', 'price' => 9299.00, 'colors' => ['Beyaz']],
 
             // Giyim & Moda
             ['name' => 'Air Zoom Pegasus Koşu Ayakkabısı', 'cat' => 'Ayakkabı & Çanta', 'brand' => 'Nike', 'price' => 3899.00, 'sizes' => ['41', '42', '43', '44'], 'colors' => ['Siyah/Beyaz', 'Mavi']],
             ['name' => 'Ultraboost Light Spor Ayakkabı', 'cat' => 'Ayakkabı & Çanta', 'brand' => 'Adidas', 'price' => 4599.00, 'sizes' => ['40', '41', '42', '43'], 'colors' => ['Beyaz', 'Siyah']],
-            ['name' => 'Slim Fit Klasik Erkek Gömlek', 'cat' => 'Erkek Giyim', 'brand' => 'Zara', 'price' => 1199.00, 'sizes' => ['S', 'M', 'L', 'XL'], 'colors' => ['Beyaz', 'Açık Mavi']],
-            ['name' => 'Oversize Kapüşonlu Sweatshirt', 'cat' => 'Erkek Giyim', 'brand' => 'Nike', 'price' => 2499.00, 'sizes' => ['M', 'L', 'XL'], 'colors' => ['Gri Melanj', 'Siyah']],
-            ['name' => 'Kruvaze Yünlü Kadın Kaban', 'cat' => 'Kadın Giyim', 'brand' => 'Zara', 'price' => 3999.00, 'sizes' => ['S', 'M', 'L'], 'colors' => ['Camel', 'Siyah']],
-            ['name' => 'Yüksek Bel Slim Kadın Jean', 'cat' => 'Kadın Giyim', 'brand' => 'Zara', 'price' => 1499.00, 'sizes' => ['36', '38', '40'], 'colors' => ['Açık Mavi', 'Koyu İndigo']],
+            ['name' => 'Slim Fit Klasik Erkek Gömlek', 'cat' => 'Kadın & Erkek Giyim', 'brand' => 'Zara', 'price' => 1199.00, 'sizes' => ['S', 'M', 'L', 'XL'], 'colors' => ['Beyaz', 'Açık Mavi']],
+            ['name' => 'Oversize Kapüşonlu Sweatshirt', 'cat' => 'Kadın & Erkek Giyim', 'brand' => 'Nike', 'price' => 2499.00, 'sizes' => ['M', 'L', 'XL'], 'colors' => ['Gri Melanj', 'Siyah']],
+            ['name' => 'Kruvaze Yünlü Kadın Kaban', 'cat' => 'Kadın & Erkek Giyim', 'brand' => 'Zara', 'price' => 3999.00, 'sizes' => ['S', 'M', 'L'], 'colors' => ['Camel', 'Siyah']],
+            ['name' => 'Yüksek Bel Slim Kadın Jean', 'cat' => 'Kadın & Erkek Giyim', 'brand' => 'Zara', 'price' => 1499.00, 'sizes' => ['36', '38', '40'], 'colors' => ['Açık Mavi', 'Koyu İndigo']],
             ['name' => 'Deri Omuz Çantası Günlük Seri', 'cat' => 'Ayakkabı & Çanta', 'brand' => 'Zara', 'price' => 1899.00, 'colors' => ['Kahverengi', 'Siyah']],
 
             // Ev & Yaşam
@@ -258,9 +295,9 @@ class DatabaseSeeder extends Seeder
             $seller = $sellers[($i - 1) % count($sellers)];
 
             // İsim çeşitlendirme (100 tekil ürün için)
-            $suffix = ($i > $templateCount) ? " Seri " . (intval($i / $templateCount) + 1) : "";
-            $productName = $template['name'] . $suffix;
-            $slug = Str::slug($productName) . '-' . $i;
+            $suffix = ($i > $templateCount) ? ' Seri '.(intval($i / $templateCount) + 1) : '';
+            $productName = $template['name'].$suffix;
+            $slug = Str::slug($productName).'-'.$i;
 
             $categoryId = $catMap[$template['cat']] ?? $allCategories[0]->id;
             $brandId = $brandMap[$template['brand']] ?? null;
@@ -284,7 +321,7 @@ class DatabaseSeeder extends Seeder
             $variantIndex = 1;
             foreach ($colors as $color) {
                 foreach ($sizes as $size) {
-                    $sku = sprintf("SKU-%03d-%d", $product->id, $variantIndex++);
+                    $sku = sprintf('SKU-%03d-%d', $product->id, $variantIndex++);
                     $price = $template['price'] + (($variantIndex - 1) * 50);
                     $discountPrice = ($variantIndex % 2 === 0) ? ($price * 0.90) : null;
 
@@ -312,7 +349,7 @@ class DatabaseSeeder extends Seeder
                 [
                     'uuid' => (string) Str::uuid(),
                     'name' => Str::slug($productName),
-                    'file_name' => 'sample_product_' . ($i % 10 + 1) . '.jpg',
+                    'file_name' => 'sample_product_'.($i % 10 + 1).'.jpg',
                     'mime_type' => 'image/jpeg',
                     'disk' => 'public',
                     'size' => rand(150000, 450000),
@@ -321,7 +358,7 @@ class DatabaseSeeder extends Seeder
 
             $productCount++;
         }
-        $this->command?->info("✅ Tam 100 Ürün ve tüm varyantları (fiyat decimal(10,2), stoklar) başarıyla oluşturuldu!");
+        $this->command?->info('✅ Tam 100 Ürün ve tüm varyantları (fiyat decimal(10,2), stoklar) başarıyla oluşturuldu!');
 
         // ==========================================
         // 7. KUPONLAR & BANNERLAR (Ekstralar)
@@ -329,13 +366,12 @@ class DatabaseSeeder extends Seeder
         Coupon::firstOrCreate(
             ['code' => 'HOSGELDIN100'],
             [
-                'type' => 'sabit',
+                'type' => 'tutar',
                 'value' => 100.00,
-                'min_order_amount' => 500.00,
+                'min_total' => 500.00,
                 'usage_limit' => 1000,
-                'start_date' => now(),
-                'end_date' => now()->addMonths(3),
-                'is_active' => true,
+                'starts_at' => now(),
+                'ends_at' => now()->addMonths(3),
             ]
         );
 
@@ -344,11 +380,10 @@ class DatabaseSeeder extends Seeder
             [
                 'type' => 'yuzde',
                 'value' => 20.00,
-                'min_order_amount' => 250.00,
+                'min_total' => 250.00,
                 'usage_limit' => 500,
-                'start_date' => now(),
-                'end_date' => now()->addMonths(1),
-                'is_active' => true,
+                'starts_at' => now(),
+                'ends_at' => now()->addMonths(1),
             ]
         );
 
@@ -372,6 +407,6 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $this->command?->info("🎉 TEBRİKLER! Hafta 1 Kabul Kriterleri (1 Admin, 5 Satıcı, 20 Müşteri, 15 Kategori, 100 Ürün) eksiksiz tamamlandı.");
+        $this->command?->info('🎉 TEBRİKLER! Hafta 1 Kabul Kriterleri (1 Admin, 5 Satıcı, 20 Müşteri, 15 Kategori, 100 Ürün) eksiksiz tamamlandı.');
     }
 }

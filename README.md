@@ -1,6 +1,6 @@
 # 🛒 PazarYeri - Çok Satıcılı E-Ticaret Platformu
 
-Amazon ve Hepsiburada benzeri, çok satıcılı (multi-vendor) mimariye sahip modern bir e-ticaret platformudur. Proje Laravel 13, PHP 8.3+, Livewire ve MySQL kullanılarak geliştirilmektedir.
+Amazon ve Hepsiburada benzeri, çok satıcılı (multi-vendor) mimariye sahip modern bir e-ticaret platformudur. Proje Laravel 13, PHP 8.3+ ve Livewire kullanılarak geliştirilmektedir. Yeni kurulumlarda SQLite kullanılır; istenirse `.env` üzerinden MySQL veya PostgreSQL yapılandırılabilir.
 
 ---
 
@@ -18,13 +18,15 @@ Amazon ve Hepsiburada benzeri, çok satıcılı (multi-vendor) mimariye sahip mo
 ### Gereksinimler:
 * PHP 8.3+ (WinGet veya sistem PHP'si)
 * Composer 2.x
-* MySQL / MariaDB (XAMPP önerilir, port: 3306)
+* PHP PDO SQLite eklentisi
 * Node.js LTS
 
 ### Adım Adım Kurulum:
 
-1. **Depoyu Klonlayın veya Proje Klasörüne Geçin:**
+1. **Depoyu Klonlayın ve geliştirme dalına geçin:**
    ```bash
+   git clone https://github.com/7Oguzhan7/pazaryeri.git
+   cd pazaryeri
    git checkout develop
    ```
 
@@ -35,22 +37,19 @@ Amazon ve Hepsiburada benzeri, çok satıcılı (multi-vendor) mimariye sahip mo
    ```
 
 3. **Ortam Dosyasını Hazırlayın:**
-   `.env` dosyasında veritabanı bağlantısını kontrol edin:
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=pazaryeri
-   DB_USERNAME=root
-   DB_PASSWORD=
+   `.env.example` SQLite ile gelir. `.env` dosyasını oluşturup uygulama anahtarını üretin:
+   ```powershell
+   Copy-Item .env.example .env
+   php artisan key:generate
    ```
 
 4. **Veritabanını ve Örnek Verileri Tek Seferde Yükleyin (Kabul Kriteri):**
-   * **Windows için tek tıkla:** Proje ana dizinindeki `veritabanini_kur.bat` dosyasına çift tıklayın.
+   * **Windows:** Proje ana dizinindeki `veritabanini_kur.bat` veya `veritabanini_kur.ps1` dosyasını çalıştırın.
    * **Veya komut satırından:**
      ```bash
      php artisan migrate:fresh --seed
      ```
+   `migrate:fresh` mevcut tüm tabloları siler. Dolu bir veritabanını sıfırlamak istemiyorsanız `php artisan migrate --seed` kullanın.
 
 5. **Uygulamayı Başlatın:**
    ```bash
