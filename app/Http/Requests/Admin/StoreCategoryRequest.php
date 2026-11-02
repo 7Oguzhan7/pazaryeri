@@ -4,15 +4,28 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class StoreCategoryRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'slug' => Str::slug(
+                filled($this->input('slug'))
+                    ? (string) $this->input('slug')
+                    : (string) $this->input('name'),
+            ),
+        ]);
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return $this->user()?->hasRole('admin') ?? false;
     }
 
     /**
@@ -23,7 +36,15 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', 'max:255', 'unique:categories,slug'],
+            'parent_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('categories', 'id')->whereNull('parent_id'),
+            ],
+            'sort' => ['required', 'integer', 'min:0', 'max:2147483647'],
+            'commission_rate' => ['required', 'numeric', 'decimal:0,2', 'between:0,100'],
         ];
     }
 }

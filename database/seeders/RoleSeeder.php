@@ -20,5 +20,27 @@ class RoleSeeder extends Seeder
         foreach (self::ROLES as $role) {
             Role::findOrCreate($role, 'web');
         }
+
+        foreach (['satici' => 'seller', 'musteri' => 'customer'] as $legacyName => $roleName) {
+            $legacyRole = Role::query()
+                ->where('name', $legacyName)
+                ->where('guard_name', 'web')
+                ->first();
+
+            if ($legacyRole === null) {
+                continue;
+            }
+
+            $role = Role::findByName($roleName, 'web');
+
+            foreach ($legacyRole->users as $user) {
+                $user->assignRole($role);
+                $user->removeRole($legacyRole);
+            }
+
+            $legacyRole->delete();
+        }
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
     }
 }

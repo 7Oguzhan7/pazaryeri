@@ -73,6 +73,31 @@ Tüm test hesaplarının şifresi varsayılan olarak **`password123`** olarak ay
 
 ---
 
+## 📅 2. Hafta: Kimlik Doğrulama, Roller ve Kategoriler
+
+* Kayıt olan hesaplara `customer` rolü otomatik atanır; e-posta doğrulama bağlantısı gönderilir.
+* Roller `admin`, `seller` ve `customer` adlarıyla tutulur. Eski Türkçe rol kayıtları `RoleSeeder` tarafından güvenle bu adlara taşınır.
+* `/admin` ve `/admin/categories` yalnızca yöneticiye; `/satici` ise yalnızca onaylanmış satıcıya açıktır.
+* Kategori yönetimi üst kategori, slug, sıralama ve komisyon oranı alanlarını destekler. Ürünü veya alt kategorisi olan kayıtlar silinemez.
+* Ana sayfa, giriş/kayıt ve oturum açmış sayfalar ortak mağaza başlığını ve alt bilgisini kullanır; kategori menüsü veritabanından yüklenir.
+
+### E-posta doğrulamayı Mailpit ile deneme
+
+Geliştirme ortamı varsayılan olarak e-postaları uygulama loguna yazar. Gerçek SMTP akışını yerel olarak görmek için [Mailpit'i kurun](https://mailpit.axllent.org/docs/install/) ve ayrı bir terminalde `mailpit` komutunu çalıştırın. Ardından `.env` içinde şu ayarları yapın:
+
+```dotenv
+MAIL_MAILER=smtp
+MAIL_HOST=127.0.0.1
+MAIL_PORT=1025
+MAIL_SCHEME=null
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+```
+
+`php artisan config:clear` komutunu çalıştırıp uygulamada yeni bir hesap oluşturun. Gelen doğrulama e-postasını `http://127.0.0.1:8025` adresindeki Mailpit arayüzünde açabilirsiniz. Otomatik testler dış SMTP servisine bağlanmadan doğrulama bildiriminin gönderilmesini sınar.
+
+---
+
 ## 🏗️ Mimari ve Tasarım Kuralları
 1. **Fiyat Hassasiyeti:** Para alanları asla `float` olamaz; `decimal(10,2)` kullanılır.
 2. **Alt Sipariş Mantığı:** Bir sepette 3 farklı satıcının ürünü varsa, 1 `orders` ve her satıcı için ayrı 1 `sub_orders` oluşturulur.

@@ -11,6 +11,8 @@ class Seller extends Model
 {
     use HasFactory;
 
+    public const STATUS_APPROVED = 'onayli';
+
     protected $fillable = [
         'user_id',
         'store_name',

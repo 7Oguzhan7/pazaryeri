@@ -2,65 +2,81 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\Categories\CreateCategoryAction;
+use App\Actions\Categories\DeleteCategoryAction;
+use App\Actions\Categories\UpdateCategoryAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreCategoryRequest;
+use App\Http\Requests\Admin\UpdateCategoryRequest;
 use App\Models\Category;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
-        //
+        $categories = Category::query()
+            ->with('parent')
+            ->withCount(['children', 'products'])
+            ->orderBy('sort')
+            ->orderBy('name')
+            ->paginate(20);
+
+        return view('admin.categories.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
-        //
+        $category = new Category;
+        $parents = Category::query()
+            ->whereNull('parent_id')
+            ->orderBy('sort')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.categories.create', compact('category', 'parents'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request, CreateCategoryAction $create): RedirectResponse
     {
-        //
+        $create->handle($request->validated());
+
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('status', __('categories.created'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
+    public function edit(Category $category): View
     {
-        //
+        $parents = Category::query()
+            ->whereNull('parent_id')
+            ->whereKeyNot($category->getKey())
+            ->orderBy('sort')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.categories.edit', compact('category', 'parents'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Category $category)
-    {
-        //
+    public function update(
+        UpdateCategoryRequest $request,
+        Category $category,
+        UpdateCategoryAction $update,
+    ): RedirectResponse {
+        $update->handle($category, $request->validated());
+
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('status', __('categories.updated'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Category $category)
+    public function destroy(Category $category, DeleteCategoryAction $delete): RedirectResponse
     {
-        //
-    }
+        $delete->handle($category);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Category $category)
-    {
-        //
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('status', __('categories.deleted'));
     }
 }

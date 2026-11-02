@@ -15,8 +15,6 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,15 +25,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->command?->info('🚀 Seeder başlatılıyor: 1 Admin, 5 Satıcı, 20 Müşteri, 15 Kategori, 100 Ürün...');
 
-        // ==========================================
-        // 0. ROLLER (Spatie Permission)
-        // ==========================================
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
-
-        $adminRole = Role::firstOrCreate(['name' => 'admin',   'guard_name' => 'web']);
-        $saticiRole = Role::firstOrCreate(['name' => 'satici',  'guard_name' => 'web']);
-        $musteriRole = Role::firstOrCreate(['name' => 'musteri', 'guard_name' => 'web']);
-        $this->command?->info('✅ 3 Rol oluşturuldu: admin, satici, musteri');
+        $this->call(RoleSeeder::class);
+        $this->command?->info('✅ 3 Rol oluşturuldu: admin, seller, customer');
 
         // ==========================================
         // 1. ADMİN OLUŞTURMA (1 Adet)
@@ -49,6 +40,7 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+        $admin->syncRoles('admin');
         $this->command?->info('✅ 1 Admin oluşturuldu: admin@pazaryeri.com (Şifre: password123)');
 
         // ==========================================
@@ -86,6 +78,7 @@ class DatabaseSeeder extends Seeder
                     'commission_rate' => $store['rate'],
                 ]
             );
+            $user->syncRoles('seller');
             $sellers[] = $seller;
         }
         $this->command?->info('✅ 5 Satıcı ve Mağazası oluşturuldu (satici1@... - satici5@...)');
@@ -120,6 +113,7 @@ class DatabaseSeeder extends Seeder
                     'email_verified_at' => now(),
                 ]
             );
+            $customer->syncRoles('customer');
 
             $cityData = $cities[($i - 1) % count($cities)];
             Address::firstOrCreate(
