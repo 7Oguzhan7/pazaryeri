@@ -33,19 +33,21 @@ class HandleInertiaRequests extends Middleware
                     : null,
             ],
             'categories' => fn (): array => Category::query()
-                ->select(['id', 'name', 'sort'])
+                ->select(['id', 'name', 'slug', 'sort'])
                 ->whereNull('parent_id')
-                ->with(['children:id,parent_id,name,sort'])
+                ->with(['children:id,parent_id,name,slug,sort'])
                 ->orderBy('sort')
                 ->orderBy('name')
                 ->get()
                 ->map(fn (Category $category): array => [
                     'id' => $category->id,
                     'name' => $category->name,
+                    'slug' => $category->slug,
                     'children' => $category->children
                         ->map(fn (Category $child): array => [
                             'id' => $child->id,
                             'name' => $child->name,
+                            'slug' => $child->slug,
                         ])
                         ->all(),
                 ])

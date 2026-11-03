@@ -84,6 +84,13 @@ Tüm test hesaplarının şifresi varsayılan olarak **`password123`** olarak ay
 * Kategori yönetimi üst kategori, slug, sıralama ve komisyon oranı alanlarını destekler. Ürünü veya alt kategorisi olan kayıtlar silinemez.
 * Ana sayfa, kimlik doğrulama, profil, müşteri/satıcı panelleri ve yönetim/kategori sayfaları React + Inertia ile sunulur; kategori menüsü veritabanından yüklenir.
 
+### 2. ve 3. hafta sunum rehberi
+
+İkinci hafta kimlik doğrulama, roller ve kategori yönetimi ile üçüncü hafta
+ürün kataloğu, görsel yönetimi ve vitrin geliştirmelerinin adım adım özeti,
+canlı demo akışı ve gelecek haftalar için güncelleme şablonu
+[sunum rehberinde](docs/2_ve_3_hafta_sunum_rehberi.md) bulunur.
+
 ### E-posta doğrulamayı Mailpit ile deneme
 
 Geliştirme ortamı varsayılan olarak e-postaları uygulama loguna yazar. Gerçek SMTP akışını yerel olarak görmek için [Mailpit'i kurun](https://mailpit.axllent.org/docs/install/) ve ayrı bir terminalde `mailpit` komutunu çalıştırın. Ardından `.env` içinde şu ayarları yapın:

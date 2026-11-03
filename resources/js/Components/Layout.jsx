@@ -7,6 +7,8 @@ export default function Layout({ children, title = 'PazarYeri' }) {
         'verification-link-sent': 'Yeni bir doğrulama bağlantısı e-posta adresinize gönderildi.',
         'profile-updated': 'Profil bilgileriniz güncellendi.',
         'password-updated': 'Parolanız güncellendi.',
+        'cart-added': 'Ürün sepetinize eklendi.',
+        'product-images-uploaded': 'Ürün görselleri yüklendi.',
     };
     const statusMessage = flashMessages[flash?.status] ?? flash?.status;
 
@@ -27,7 +29,7 @@ export default function Layout({ children, title = 'PazarYeri' }) {
                         </button>
                     </form>
                     <div className="ml-auto flex items-center gap-3 text-sm">
-                        <button type="button" disabled title="Sepet özelliği sonraki haftalarda eklenecek"
+                        <button type="button" disabled title="Sepete ürün ekleyebilirsiniz; sepet görüntüleme sonraki aşamada eklenecek."
                             className="cursor-not-allowed rounded-md px-2 py-2 text-gray-500">
                             Sepet <span className="rounded-full bg-gray-100 px-2 py-1">0</span>
                         </button>
@@ -58,12 +60,12 @@ export default function Layout({ children, title = 'PazarYeri' }) {
                                 {categories.length ? categories.map((category) => (
                                     <section key={category.id}>
                                         <h2 className="font-semibold text-gray-900">
-                                            <Link href="/#categories" className="hover:text-indigo-700">{category.name}</Link>
+                                            <Link href={`/kategori/${category.slug}`} className="hover:text-indigo-700">{category.name}</Link>
                                         </h2>
                                         {category.children?.length > 0 && (
                                             <ul className="mt-2 grid gap-1 text-sm text-gray-600">
                                                 {category.children.map((child) => (
-                                                    <li key={child.id}><Link href="/#categories" className="hover:text-indigo-700">{child.name}</Link></li>
+                                                    <li key={child.id}><Link href={`/kategori/${child.slug}`} className="hover:text-indigo-700">{child.name}</Link></li>
                                                 ))}
                                             </ul>
                                         )}
