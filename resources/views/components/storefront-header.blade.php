@@ -1,7 +1,7 @@
 <header class="border-b border-gray-200 bg-white">
     <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <a href="{{ route('home') }}" class="text-xl font-bold tracking-tight text-indigo-700">
-            {{ config('app.name', 'PazarYeri') }}
+            {{ config('app.name', 'TıklaAl') }}
         </a>
 
         <form action="{{ route('home') }}" method="GET" role="search" class="order-3 flex w-full flex-1 gap-2 sm:order-none sm:min-w-64">

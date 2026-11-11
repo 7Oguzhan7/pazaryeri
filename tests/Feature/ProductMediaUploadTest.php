@@ -84,6 +84,25 @@ class ProductMediaUploadTest extends TestCase
         $this->assertDatabaseCount('media', 0);
     }
 
+    public function test_admin_can_upload_images_for_a_product(): void
+    {
+        Storage::fake('public');
+        $seller = $this->createSeller();
+        $product = $this->createProduct($seller);
+        $admin = User::factory()->create();
+        $admin->assignRole(Role::findOrCreate('admin', 'web'));
+
+        $this->actingAs($admin)->get(route('products.show', $product->slug))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page->where('canUploadImages', true));
+
+        $this->actingAs($admin)->post(route('products.media.store', $product), [
+            'images' => [UploadedFile::fake()->image('admin-product.jpg')],
+        ])->assertRedirect(route('products.show', $product->slug));
+
+        $this->assertDatabaseCount('media', 1);
+    }
+
     public function test_guests_are_redirected_to_login_before_uploading_product_images(): void
     {
         Storage::fake('public');

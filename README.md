@@ -52,6 +52,10 @@ Amazon ve Hepsiburada benzeri, çok satıcılı (multi-vendor) mimariye sahip mo
    `migrate:fresh` mevcut tüm tabloları siler. Dolu bir veritabanını sıfırlamak istemiyorsanız `php artisan migrate --seed` kullanın.
 
 5. **Uygulamayı Başlatın:**
+   * **Windows:** Proje klasöründeki `siteyi_ac.bat` dosyasına çift tıklayın. Site
+     hazır olduğunda tarayıcı açılır; sunucu penceresini kapatmayın. Kapatmak
+     için o pencerede `Ctrl+C` tuşlarına basın.
+   * **Komut satırından:**
    ```bash
    php artisan serve
    ```

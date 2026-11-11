@@ -1,4 +1,5 @@
 import { Link, router } from '@inertiajs/react';
+import ProductFilters from '../../../Components/ProductFilters';
 import Layout from '../../../Components/Layout';
 import ProductCard from '../../../Components/ProductCard';
 
@@ -9,9 +10,10 @@ const sortOptions = [
     { value: 'rating', label: 'En çok değerlendirilen' },
 ];
 
-export default function Show({ category, products, sort }) {
+export default function Show({ category, products, sort, filters, filterOptions }) {
     function changeSort(event) {
-        router.get(`/kategori/${category.slug}`, { sort: event.target.value }, {
+        const query = Object.fromEntries(new URLSearchParams(window.location.search));
+        router.get(`/kategori/${category.slug}`, { ...query, sort: event.target.value }, {
             preserveScroll: true,
             preserveState: true,
             replace: true,
@@ -54,6 +56,13 @@ export default function Show({ category, products, sort }) {
                         </select>
                     </label>
                 </header>
+
+                <ProductFilters
+                    action={`/kategori/${category.slug}`}
+                    filters={filters}
+                    filterOptions={filterOptions}
+                    sort={sort}
+                />
 
                 <p className="text-sm text-gray-600">{products.total} ürün</p>
                 {products.data.length > 0 ? (

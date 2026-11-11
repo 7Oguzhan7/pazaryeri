@@ -7,7 +7,7 @@ const currency = new Intl.NumberFormat('tr-TR', {
     currency: 'TRY',
 });
 
-export default function Show({ product, canUploadImages }) {
+export default function Show({ product, canAddToCart, canUploadImages }) {
     const initialVariant = product.variants.find((variant) => variant.stock > 0) ?? product.variants[0] ?? null;
     const [selectedVariantId, setSelectedVariantId] = useState(initialVariant?.id ?? null);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -89,7 +89,12 @@ export default function Show({ product, canUploadImages }) {
 
                     <p className="whitespace-pre-line leading-7 text-gray-700">{product.description}</p>
 
-                    <p className="text-sm text-gray-700">Satıcı: <span className="font-medium">{product.sellerName}</span></p>
+                    <p className="text-sm text-gray-700">
+                        Satıcı:{' '}
+                        <Link href={`/magaza/${product.sellerSlug}`} className="font-medium text-indigo-700 hover:underline">
+                            {product.sellerName}
+                        </Link>
+                    </p>
 
                     {product.variants.length > 0 ? (
                         <div className="grid gap-4 rounded-xl border border-gray-200 bg-white p-5">
@@ -131,34 +136,38 @@ export default function Show({ product, canUploadImages }) {
                                 </div>
                             )}
 
-                            <form onSubmit={addToCart} className="grid gap-3">
-                                <label className="grid max-w-32 gap-1 text-sm font-medium text-gray-700">
-                                    Adet
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        max={selectedVariant?.stock ?? 1}
-                                        value={cartForm.data.quantity}
-                                        onChange={(event) => cartForm.setData('quantity', Number(event.target.value))}
-                                        className="rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                                    />
-                                </label>
-                                {cartForm.errors.quantity && <p className="text-sm text-red-700">{cartForm.errors.quantity}</p>}
-                                <button
-                                    type="submit"
-                                    disabled={!selectedVariant || selectedVariant.stock < 1 || cartForm.processing}
-                                    className="rounded-md bg-indigo-600 px-5 py-3 font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-400"
-                                >
-                                    {cartForm.processing ? 'Sepete ekleniyor…' : 'Sepete ekle'}
-                                </button>
-                            </form>
+                            {canAddToCart ? (
+                                <form onSubmit={addToCart} className="grid gap-3">
+                                    <label className="grid max-w-32 gap-1 text-sm font-medium text-gray-700">
+                                        Adet
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            max={selectedVariant?.stock ?? 1}
+                                            value={cartForm.data.quantity}
+                                            onChange={(event) => cartForm.setData('quantity', Number(event.target.value))}
+                                            className="rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                                        />
+                                    </label>
+                                    {cartForm.errors.quantity && <p className="text-sm text-red-700">{cartForm.errors.quantity}</p>}
+                                    <button
+                                        type="submit"
+                                        disabled={!selectedVariant || selectedVariant.stock < 1 || cartForm.processing}
+                                        className="rounded-md bg-indigo-600 px-5 py-3 font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+                                    >
+                                        {cartForm.processing ? 'Sepete ekleniyor…' : 'Sepete ekle'}
+                                    </button>
+                                </form>
+                            ) : (
+                                <p className="text-sm text-gray-600">Bu hesap türüyle alışveriş yapılamaz.</p>
+                            )}
                         </div>
                     ) : (
                         <p className="rounded-lg bg-amber-50 p-4 text-amber-900">Bu ürün için henüz satın alınabilir varyant yok.</p>
                     )}
 
                     {canUploadImages && (
-                        <form onSubmit={uploadImages} className="grid gap-3 rounded-xl border border-dashed border-gray-300 bg-white p-5">
+                        <form id="product-images" onSubmit={uploadImages} className="grid gap-3 rounded-xl border border-dashed border-gray-300 bg-white p-5">
                             <h3 className="font-semibold text-gray-900">Ürün görselleri ekle</h3>
                             <input
                                 type="file"

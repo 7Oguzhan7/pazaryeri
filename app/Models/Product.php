@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,6 +56,83 @@ class Product extends Model implements HasMedia
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function scopeStorefrontAvailable(Builder $query): Builder
+    {
+        return $query
+            ->where('status', 'aktif')
+            ->whereHas('seller', fn (Builder $sellerQuery) => $sellerQuery
+                ->where('status', Seller::STATUS_APPROVED))
+            ->whereHas('variants', fn (Builder $variantQuery) => $variantQuery->where('stock', '>', 0));
+    }
+
+    public function scopeMatchingStorefrontSearch(Builder $query, string $search): Builder
+    {
+        return $query->where(fn (Builder $searchQuery) => $searchQuery
+            ->where('name', 'like', "%{$search}%")
+            ->orWhereHas('brand', fn (Builder $brandQuery) => $brandQuery
+                ->where('name', 'like', "%{$search}%")));
+    }
+
+    /**
+     * @param  array<string, mixed>  $filters
+     */
+    public function scopeWithStorefrontFilters(Builder $query, array $filters): Builder
+    {
+        if (! empty($filters['category'])) {
+            $query->whereHas('category', fn (Builder $categoryQuery) => $categoryQuery
+                ->where('slug', $filters['category'])
+                ->orWhereHas('parent', fn (Builder $parentQuery) => $parentQuery
+                    ->where('slug', $filters['category'])));
+        }
+
+        if (! empty($filters['brand'])) {
+            $query->whereHas('brand', fn (Builder $brandQuery) => $brandQuery
+                ->where('slug', $filters['brand']));
+        }
+
+        if (! empty($filters['rating'])) {
+            $query->whereRaw(
+                'CAST((SELECT AVG(reviews.rating) FROM reviews WHERE reviews.product_id = products.id AND reviews.is_approved = ?) AS DECIMAL(3, 1)) >= CAST(? AS DECIMAL(3, 1))',
+                [true, $filters['rating']],
+            );
+        }
+
+        $hasVariantFilters = ($filters['min'] ?? null) !== null
+            || ($filters['max'] ?? null) !== null
+            || ! empty($filters['color'])
+            || ! empty($filters['size']);
+
+        if ($hasVariantFilters) {
+            $query->whereHas('variants', function (Builder $variantQuery) use ($filters): void {
+                $variantQuery->where('stock', '>', 0);
+
+                if (! empty($filters['color'])) {
+                    $variantQuery->where('color', $filters['color']);
+                }
+
+                if (! empty($filters['size'])) {
+                    $variantQuery->where('size', $filters['size']);
+                }
+
+                if (($filters['min'] ?? null) !== null) {
+                    $variantQuery->whereRaw(
+                        'CAST((CASE WHEN discount_price IS NOT NULL AND discount_price > 0 AND discount_price < price THEN discount_price ELSE price END) AS DECIMAL(10, 2)) >= CAST(? AS DECIMAL(10, 2))',
+                        [$filters['min']],
+                    );
+                }
+
+                if (($filters['max'] ?? null) !== null) {
+                    $variantQuery->whereRaw(
+                        'CAST((CASE WHEN discount_price IS NOT NULL AND discount_price > 0 AND discount_price < price THEN discount_price ELSE price END) AS DECIMAL(10, 2)) <= CAST(? AS DECIMAL(10, 2))',
+                        [$filters['max']],
+                    );
+                }
+            });
+        }
+
+        return $query;
     }
 
     public function orderItems(): HasManyThrough

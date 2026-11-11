@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>{{ config('app.name', 'PazarYeri') }}</title>
+        <title>{{ config('app.name', 'TıklaAl') }}</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased text-gray-900">
@@ -13,7 +13,7 @@
 
             <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-10 sm:px-6 lg:px-8">
                 <section class="rounded-2xl bg-indigo-700 px-6 py-12 text-white sm:px-10">
-                    <p class="text-sm font-semibold uppercase tracking-wide text-indigo-100">PazarYeri'ne hoş geldiniz</p>
+                    <p class="text-sm font-semibold uppercase tracking-wide text-indigo-100">TıklaAl'a hoş geldiniz</p>
                     <h1 class="mt-3 max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
                         Aradığınız ürünleri güvenle keşfedin.
                     </h1>

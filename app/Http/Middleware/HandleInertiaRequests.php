@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Seller;
 use Illuminate\Http\Request;
@@ -29,9 +30,11 @@ class HandleInertiaRequests extends Middleware
                         'isAdmin' => $user->hasRole('admin'),
                         'isApprovedSeller' => $user->hasRole('seller')
                             && $user->seller?->status === Seller::STATUS_APPROVED,
+                        'canShop' => $user->canShop(),
                     ]
                     : null,
             ],
+            'cartCount' => fn (): int => $this->cartCount($request),
             'categories' => fn (): array => Category::query()
                 ->select(['id', 'name', 'slug', 'sort'])
                 ->whereNull('parent_id')
@@ -55,6 +58,20 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'status' => fn (): ?string => $request->session()->get('status'),
             ],
+            'search' => $request->string('q')->toString(),
         ];
+    }
+
+    private function cartCount(Request $request): int
+    {
+        $cartQuery = Cart::query();
+
+        if ($request->user()) {
+            $cartQuery->where('user_id', $request->user()->id);
+        } else {
+            $cartQuery->where('session_id', $request->session()->getId());
+        }
+
+        return (int) ($cartQuery->withSum('items', 'quantity')->value('items_sum_quantity') ?? 0);
     }
 }

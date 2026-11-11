@@ -1,25 +1,27 @@
-# PazarYeri — 2. ve 3. Hafta Sunum Rehberi
+# PazarYeri — 2., 3. ve 4. Hafta Sunum Rehberi
 
-Bu rehber, proje gereksinim PDF'sindeki 2. ve 3. hafta hedeflerini; bu haftalarda
-uygulanan işleri, ilgili kod dosyalarını, doğrulama adımlarını ve öğretmene
-yapılabilecek canlı sunum akışını bir arada açıklar. Sonraki haftalar
+Bu rehber, proje gereksinim PDF'sindeki 2., 3. ve 4. hafta hedeflerini; bu
+haftalarda uygulanan işleri, ilgili kod dosyalarını, doğrulama adımlarını ve
+öğretmene yapılabilecek canlı sunum akışını bir arada açıklar. Sonraki haftalar
 tamamlandıkça aynı dosyaya, en sondaki şablon kullanılarak yeni bir bölüm
 eklenecektir. Önceki haftaların kayıtları silinmemelidir.
 
 > **Sunumda doğru kapsamı anlatın:** Bu proje Laravel 13, Inertia.js ve React
 > kullanır. PDF'deki Livewire ile varyant güncelleme kabul kriteri, mevcut React
-> mimarisinde React durumu ile karşılanmıştır. PDF'de sonraki haftalara bırakılan
-> özellikler tamamlanmış gibi sunulmamalıdır.
+> mimarisinde React durumu ile karşılanmıştır. Dördüncü hafta arama/filtre,
+> satıcı başvurusu ve mağaza özelliklerini kapsar; beşinci haftaya bırakılan
+> sepet yönetimi ve ödeme özellikleri tamamlanmış gibi sunulmamalıdır.
 
 ## İçindekiler
 
 1. [Kısa proje anlatımı](#kısa-proje-anlatımı)
 2. [2. hafta — Kimlik doğrulama, roller ve kategoriler](#2-hafta--kimlik-doğrulama-roller-ve-kategoriler)
 3. [3. hafta — Ürün kataloğu ve vitrin](#3-hafta--ürün-kataloğu-ve-vitrin)
-4. [Öğretmene yapılacak demo akışı](#öğretmene-yapılacak-demo-akışı)
-5. [Muhtemel sorular ve cevapları](#muhtemel-sorular-ve-cevapları)
-6. [Doğrulama sonuçları ve sınırlar](#doğrulama-sonuçları-ve-sınırlar)
-7. [Gelecek haftalar için kayıt şablonu](#gelecek-haftalar-için-kayıt-şablonu)
+4. [4. hafta — Arama, filtreler ve satıcı yönetimi](#4-hafta--arama-filtreler-ve-satıcı-yönetimi)
+5. [Öğretmene yapılacak demo akışı](#öğretmene-yapılacak-demo-akışı)
+6. [Muhtemel sorular ve cevapları](#muhtemel-sorular-ve-cevapları)
+7. [Doğrulama sonuçları ve sınırlar](#doğrulama-sonuçları-ve-sınırlar)
+8. [Gelecek haftalar için kayıt şablonu](#gelecek-haftalar-için-kayıt-şablonu)
 
 ## Kısa proje anlatımı
 
@@ -27,8 +29,9 @@ eklenecektir. Önceki haftaların kayıtları silinmemelidir.
 > e-ticaret projesidir. Laravel tarafı veritabanı, doğrulama, roller ve iş
 > kurallarını yönetir. Kullanıcı arayüzü React, Inertia.js ve Vite ile çalışır.
 > İkinci haftada kimlik doğrulama, rol bazlı erişim ve kategori yönetimini;
-> üçüncü haftada ise gezilebilir ürün vitrini, varyantlar, görseller ve sepete
-> ürün ekleme akışını geliştirdim.”
+> üçüncü haftada ürün vitrini, varyantlar, görseller ve sepete eklemeyi;
+> dördüncü haftada arama/filtreleri, satıcı başvurusu ve mağaza yönetimini
+> geliştirdim.”
 
 **Teknoloji özeti:** PHP 8.3, Laravel 13, Inertia.js, React 19, Vite ve
 Tailwind CSS 4. Proje geliştirme dalı `develop`'tur; `main` dalına doğrudan
@@ -160,14 +163,33 @@ detayından gezebilmesidir. Ürün ve varyant tabloları önceki veritabanı
    ekranda hemen güncellenir. Bu, PDF'deki Livewire kabul kriterinin projedeki
    React + Inertia mimarisine uyarlanmış karşılığıdır.
 
-7. **Sepete ekleme çalışır hale getirildi.** Kullanıcı sepeti veya oturum
-   kimliğine bağlı misafir sepeti kullanılır. Aynı varyant tekrar eklenirse
-   miktar artırılır. Ürün durumu, satıcı onayı ve stok sunucuda yeniden
-   doğrulanır.
+7. **Sepet müşteri ve misafir alışverişine göre sınırlandırıldı.** Üye
+   müşteriler kendi kullanıcı sepetini, misafirler oturum sepetini kullanır.
+   Yönetici ve satıcı hesapları alışveriş yapamaz; bu kontrol sunucu tarafında
+   da uygulanır. Aynı varyant tekrar eklenirse miktar artırılır. Ürün durumu,
+   satıcı onayı ve stok yeniden doğrulanır.
+   - `app/Models/User.php`
    - `app/Http/Controllers/Storefront/CartItemController.php`
+   - `app/Http/Middleware/HandleInertiaRequests.php`
    - Rota: `POST /cart/items`
 
-8. **N+1 sorgu riskini azaltmak için ilişkiler önceden yüklenir.** Ürün
+8. **Sepet görünür hale getirildi.** Üst menüdeki sepet bağlantısı gerçek
+   ürün adedini gösterir. `/sepet` sayfası ürünleri, varyantı, satıcıyı,
+   miktarı ve ara toplamı listeler. Ürün ekleme başarılı olduğunda kullanıcı
+   doğrudan sepet sayfasına yönlendirilir.
+   - `app/Http/Controllers/Storefront/CartPageController.php`
+   - `resources/js/Pages/Storefront/Cart/Show.jsx`
+   - `resources/js/Components/Layout.jsx`
+
+9. **Satıcı görsel yönetimine panelinden ulaşır.** Onaylı satıcı paneli kendi
+   ürünlerini listeler ve her ürünün görsel yükleme alanına bağlantı verir.
+   Yükleme yetkisi ayrıca sunucu tarafındaki policy ile kontrol edilir;
+   yöneticiler de ürün detay sayfasından görsel yükleyebilir.
+   - `app/Http/Controllers/Seller/DashboardController.php`
+   - `resources/js/Pages/Seller/Dashboard.jsx`
+   - `app/Policies/ProductPolicy.php`
+
+10. **N+1 sorgu riskini azaltmak için ilişkiler önceden yüklenir.** Ürün
    varyantı, medya, satıcı, kategori ve yorum verileri ilgili sorgularda
    eager loading ve aggregate sorgularıyla hazırlanır. Kategori ürün sayısı
    değişince sorgu adedi başına ürün artmamalıdır.
@@ -175,14 +197,119 @@ detayından gezebilmesidir. Ürün ve varyant tabloları önceki veritabanı
 
 ### PDF kapsamı hakkında
 
-Sepete ürün ekleme bu çalışmada ürün sayfasından kullanılabilir; tam sepet
-görüntüleme, sepet birleştirme, favoriler, adres/kupon, checkout ve ödeme
-akışları sonraki haftaların kapsamıdır. Görselleri olmayan seed ürünler
-arayüzde yer tutucu gösterir; bu, gerçek ürün görseli değildir.
+Sepet sayfası ürünleri ve ara toplamı gösterir; sepetten miktar değiştirme,
+ürün silme ve misafir sepetini giriş sonrası müşteri sepetiyle birleştirme,
+favoriler, adres/kupon, checkout ve ödeme akışları sonraki haftaların
+kapsamıdır. Görselleri olmayan seed ürünler arayüzde yer tutucu gösterir; bu,
+gerçek ürün görseli değildir.
+
+## 4. hafta — Arama, filtreler ve satıcı yönetimi
+
+PDF'nin bu haftaki hedefleri; katalogda ürün bulmayı kolaylaştırmak, satıcı
+başvurularını yönetici onayına bağlamak, satıcının kendi ürünlerini
+yönetebilmesini sağlamak ve onaylı satıcıya herkese açık mağaza sayfası
+sunmaktır.
+
+### Uygulama adımları
+
+1. **Ürün ve marka araması eklendi.** Ana sayfadaki arama ürün adında ve marka
+   adında çalışır. Yazarken arama önerileri ayrı bir JSON rotasından alınır;
+   sonuç sayısı sınırlandırılır ve istekler hız sınırlamasına tabidir.
+   - `app/Http/Controllers/Storefront/HomeController.php`
+   - `app/Http/Controllers/Storefront/SearchSuggestionController.php`
+   - `resources/js/Components/Layout.jsx`
+   - `resources/js/Pages/Storefront/Home.jsx`
+   - Öneri rotası: `GET /arama/oneri`
+
+2. **Katalog filtreleri eklendi.** Kategori, marka, en düşük/en yüksek fiyat,
+   renk, beden ve en düşük puan filtreleri ürün kataloğunda kullanılabilir.
+   Renk, beden ve fiyat koşulları aynı stok varyantına uygulanır; böylece bir
+   varyantın rengiyle başka varyantın beden/fiyatı yanlışlıkla eşleştirilmez.
+   Sayısal filtreler ve izin verilen sıralama değerleri sunucuda doğrulanır.
+   - `app/Models/Product.php`
+   - `app/Actions/Storefront/GetProductFilterOptions.php`
+   - `app/Http/Requests/Storefront/CatalogFilterRequest.php`
+   - `resources/js/Components/ProductFilters.jsx`
+   - `resources/js/Pages/Storefront/Categories/Show.jsx`
+
+3. **Filtre durumu URL'de korunur.** Arama/filtre değerleri sorgu
+   parametreleridir; sayfa yenilendiğinde ve sayfalar arasında gezinirken
+   seçili değerler korunur. Kategori sıralaması da aynı sorgu parametreleriyle
+   birlikte çalışır.
+   - `app/Http/Controllers/Storefront/CategoryPageController.php`
+   - `app/Http/Controllers/Storefront/HomeController.php`
+
+4. **Satıcı başvuru formu ve başvuru durumu eklendi.** Doğrulanmış kullanıcı
+   başvuru formunu gönderir. Vergi numarası ve Türkiye IBAN'ı biçim ve
+   sağlama kontrolünden geçer. Başvuru beklerken kullanıcı müşteri rolünde
+   kalır; reddedilen başvuru düzeltilerek yeniden gönderilebilir.
+   - `app/Http/Controllers/Seller/ApplicationController.php`
+   - `app/Http/Requests/Seller/StoreSellerApplicationRequest.php`
+   - `resources/js/Pages/Seller/Application.jsx`
+   - Rota: `GET /satici-basvurusu`
+
+5. **Yönetici onay/red ekranı eklendi.** Yönetici bekleyen başvuruları
+   görüntüler; onaylama işlemi satıcı kaydı oluşturup rolü satıcıya geçirir.
+   Red işlemi de başvuruyu ve gerekçeyi kaydeder. Onaydaki veritabanı
+   değişiklikleri transaction içinde yapılır.
+   - `app/Http/Controllers/Admin/SellerApplicationController.php`
+   - `resources/js/Pages/Admin/SellerApplications/Index.jsx`
+   - `app/Models/Seller.php`
+   - Yönetici rotaları: `/admin/seller-applications`
+
+6. **Satıcının ürün yönetimi eklendi.** Onaylı satıcı yeni ürün oluşturabilir,
+   yalnızca kendisine ait ürünü düzenleyebilir veya silebilir; ürünü aktif/pasif
+   yapabilir. Varyant SKU'su, fiyat, indirim fiyatı ve stok aynı formdan
+   yönetilir. Başka satıcıya ait ürün/varyant kimlikleri sunucu tarafında
+   reddedilir. Sipariş geçmişi olan ürün, ilişkili sipariş kayıtları korunarak
+   pasife alınır.
+   - `app/Http/Controllers/Seller/ProductController.php`
+   - `app/Http/Requests/Seller/StoreProductRequest.php`
+   - `app/Policies/ProductPolicy.php`
+   - `resources/js/Components/SellerProductForm.jsx`
+   - `resources/js/Pages/Seller/Products/`
+   - Rotalar: `/satici/urunler`
+
+7. **Herkese açık mağaza sayfası eklendi.** `/magaza/{slug}` yalnızca onaylı
+   satıcılar için açılır ve o satıcının aktif, stokta bulunan ürünlerini
+   gösterir. Ürün detayından satıcının mağazasına gidilebilir; onaysız veya
+   bulunmayan mağaza herkese açık katalog olarak sunulmaz.
+   - `app/Http/Controllers/Storefront/SellerStoreController.php`
+   - `resources/js/Pages/Storefront/Store/Show.jsx`
+   - Rota: `GET /magaza/{slug}`
+
+8. **Haftanın davranışları feature testleriyle kapsandı.** Arama/filtre,
+   URL parametreleri, başvuru ve yönetici kararı, satıcı ürün sahipliği,
+   mağaza görünürlüğü ve stok koşulları otomatik olarak doğrulanır.
+   - `tests/Feature/StorefrontSearchAndFiltersTest.php`
+   - `tests/Feature/SellerApplicationTest.php`
+   - `tests/Feature/SellerProductManagementTest.php`
+   - `tests/Feature/PublicSellerStoreTest.php`
+
+### 4. hafta demo akışı
+
+1. Ana sayfadaki arama alanına ürün adı veya marka yazıp öneriyi gösterin.
+2. Kategori sayfasında marka/fiyat/renk/beden/puan filtresi uygulayın; URL
+   parametrelerinin ve sayfalama/sıralamanın korunduğunu gösterin.
+3. Müşteri hesabıyla satıcı başvuru formunu doldurun; başvurunun beklemede
+   olduğunu açıklayın.
+4. Yönetici hesabıyla `/admin/seller-applications` sayfasında başvuruyu
+   onaylayın veya reddedin; onayın kullanıcı rolünü değiştirdiğini belirtin.
+5. Onaylı satıcı hesabıyla `/satici/urunler` sayfasında ürün ve stok
+   varyantlarını yönetin. Ürün pasifken vitrine çıkmadığını, tekrar aktif
+   edildiğinde mağaza sayfasında listelendiğini gösterin.
+6. `/magaza/{slug}` sayfasını açıp mağaza ürünlerine gidin.
+
+### 4. haftanın sınırları
+
+Bu hafta ürün kataloğu, başvuru ve satıcı ürün yönetimini kapsar. Sipariş
+oluşturma, checkout, ödeme ve kargo iş akışları burada tamamlanmış özellikler
+değildir. Görsel yönetimi mevcut ürün detay ekranından çalışır; pasif ürünün
+görsel bağlantısı gösterilmez, ürün önce yeniden yayına alınmalıdır.
 
 ## Öğretmene yapılacak demo akışı
 
-Önerilen süre: **10 dakika**. Sunumdan önce uygulamayı ve veritabanını
+Önerilen süre: **12 dakika**. Sunumdan önce uygulamayı ve veritabanını
 hazırlayın; sunum sırasında çalışan yerel veritabanında `migrate:fresh`
 çalıştırmayın, çünkü bu komut mevcut tabloları siler.
 
@@ -214,31 +341,37 @@ hazırlayın; sunum sırasında çalışan yerel veritabanında `migrate:fresh`
    gerekmez. Arayüz üzerinde geliştirme yapılacaksa ikinci terminalde
    `npm run dev` çalıştırın.
 
-### 10 dakikalık konuşma ve gösterim
+### 12 dakikalık konuşma ve gösterim
 
 | Süre | Gösterilecek bölüm | Anlatılacak nokta |
 |---|---|---|
-| 00:00–01:00 | Ana sayfa | Çok satıcılı pazaryeri amacı ve Laravel + React/Inertia mimarisi |
-| 01:00–03:00 | Giriş ve roller | Müşteri rolünün atanması; admin ve onaylı satıcı rotalarının korunması |
-| 03:00–04:00 | Admin kategori sayfası | Kategori ekleme/düzenleme/silme, üst kategori ve doğrulama |
-| 04:00–06:00 | Ana sayfa ve kategori | Aktif banner, öne çıkan kategoriler, ürün kartı, 24 ürün/sayfa ve sıralama |
-| 06:00–08:00 | Ürün detayı | Görsel alanı, varyant değiştirerek fiyat/stok güncelleme ve sepete ekleme |
-| 08:00–09:00 | Test ve teknik doğrulama | Feature testleri, N+1 sorgu kontrol testi ve üretim frontend derlemesi |
-| 09:00–10:00 | Kapanış | 2./3. hafta teslimi, kapsam dışı sonraki işler ve GitHub `develop` dalı |
+| 00:00–01:00 | Ana sayfa | Pazaryeri amacı ve Laravel + React/Inertia mimarisi |
+| 01:00–02:30 | Giriş ve roller | Müşteri, yönetici ve onaylı satıcı erişim farkları |
+| 02:30–04:00 | Kategori yönetimi | Yönetici kategori ekleme/düzenleme ve doğrulama |
+| 04:00–05:00 | Ürün arama | Ürün/marka araması ve otomatik öneriler |
+| 05:00–06:30 | Katalog filtreleri | Kategori, marka, fiyat, renk, beden, puan ve URL parametreleri |
+| 06:30–07:30 | Ürün detayı ve sepet | Varyant fiyat/stok güncellemesi, görseller ve sepete ekleme |
+| 07:30–08:30 | Satıcı başvurusu | Müşteri hesabıyla başvuru ve bekleyen durum |
+| 08:30–09:30 | Yönetici onayı | Başvuruyu inceleme, onaylama/reddetme ve rol değişimi |
+| 09:30–10:30 | Satıcı paneli | Ürün/varyant/stok yönetimi ve sahiplik sınırları |
+| 10:30–11:15 | Mağaza sayfası | Slug ile mağaza adresi ve vitrindeki ürünler |
+| 11:15–12:00 | Doğrulama ve kapanış | Test/build sonucu, sonraki hafta kapsamı |
 
 ### Demo sırasında önerilen sıra
 
-1. Ana sayfadaki banner ve kategori bağlantılarını gösterin.
-2. Kategoriye gidin; sıralamayı “Fiyat: artan” ve “En çok değerlendirilen”
-   arasında değiştirin.
-3. Bir ürün açıp varyantı değiştirin; sayfa yenilenmeden fiyat ve stok
-   bilgisinin değiştiğini gösterin.
-4. Uygunsa giriş yapıp ürünü sepete ekleyin. Stok sınırı aşılırsa form
-   hatasının sunucu tarafından döndüğünü açıklayın.
-5. Yönetici hesabıyla `/admin/categories` ekranını ve kategori CRUD
-   doğrulamasını gösterin. Yönetici hesabı sunumdan önce hazır olmalıdır.
-6. Terminalde `php artisan test --compact` ve `npm run build` komutlarının
-   başarılı sonuçlarını gösterin.
+1. Ana sayfada arama kutusuna ürün veya marka yazıp öneri listesini gösterin.
+2. Kategoriye girip fiyat/marka/renk/beden/puan filtresi seçin; URL'deki
+   sorgu parametrelerinin korunduğunu gösterin.
+3. Bir ürün açıp varyantı değiştirin; fiyat ve stok bilgisinin yenilemesiz
+   güncellendiğini ve ürünün sepete eklenebildiğini gösterin.
+4. Müşteri hesabıyla satıcı başvurusu yapın. Onayı göstermek için ayrı bir
+   tarayıcı profili/oturumunda yönetici hesabıyla bekleyen başvuruyu açın.
+5. Onaylı satıcı hesabıyla `/satici/urunler` sayfasında kendi ürününü ve
+   varyant stoklarını yönetin; başka satıcı ürünlerinin listelenmediğini
+   belirtin.
+6. Satıcı mağazasını `/magaza/{slug}` adresinde gösterin.
+7. Terminalde `php artisan test --compact` ve `npm run build` sonuçlarını
+   gösterin.
 
 ## Muhtemel sorular ve cevapları
 
@@ -278,24 +411,26 @@ gönderim doğrulanmış bir teslimat olarak sunulmuyor. README'de Mailpit
 kurulum adımları bulunuyor.”
 
 **Soru: Şu an tamamlanmayan alışveriş özellikleri neler?**
-**Cevap:** “Bu teslimde ürün kataloğu ve sepete ekleme var. Sepet yönetimi,
-checkout, gerçek ödeme, kargo/iade ve satıcı ürün yönetimi PDF'deki sonraki
-haftaların işidir; tamamlanmış gibi gösterilmiyor.”
+**Cevap:** “Dördüncü haftada satıcı başvurusu ve satıcı ürün yönetimi de
+eklenmiştir. Sepet miktarını değiştirme/silme, misafir sepetini girişte
+birleştirme, checkout, gerçek ödeme ve kargo/iade akışları sonraki haftaların
+kapsamıdır; tamamlanmış gibi sunulmuyor.”
 
 ## Doğrulama sonuçları ve sınırlar
 
-- Son doğrulamada tam Laravel test paketi: **66 test geçti, 401 assertion
-  geçti**. Kapsam, kod değişikliği oldukça yeniden çalıştırılmalıdır.
-- `npm run build` üretim arayüzünü başarıyla derler.
+- Son doğrulamada tam Laravel test paketi: **89 test geçti, 639 assertion
+  geçti**.
+- `npm run build` üretim arayüzünü başarıyla derledi.
 - `vendor/bin/pint --dirty --format agent` değiştirilmiş PHP dosyalarını
-  biçimlendirir.
+  biçimlendirdi.
+- `git diff --check` temiz sonuçlandı.
 - `composer validate --no-check-publish` Composer dosyalarını doğrular.
 - `composer audit` mevcut kilit dosyasında `symfony/mime` için orta seviye bir
   güvenlik tavsiyesi bildirmiştir; bu durum 2./3. hafta uygulamasından önce de
   mevcuttu ve bu teslim kapsamında bağımlılık yükseltmesi yapılmamıştır.
 - 2. hafta çalışmaları `816d3ec` commit'iyle; React/Inertia geçişi `49b45c6`
-  commit'iyle `develop` dalında bulunmaktadır. 3. hafta kodu ve bu rehber,
-  bu teslim kapsamında aynı dala gönderilmektedir.
+  commit'iyle `develop` dalındadır. Bu çalışma ağacındaki 3./4. hafta
+  değişiklikleri ve sunum rehberi henüz commit edilip GitHub'a gönderilmedi.
 
 ## Gelecek haftalar için kayıt şablonu
 

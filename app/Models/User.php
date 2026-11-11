@@ -38,6 +38,11 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public function canShop(): bool
+    {
+        return $this->hasRole('customer') && ! $this->hasAnyRole(['admin', 'seller']);
+    }
+
     public function addresses(): HasMany
     {
         return $this->hasMany(Address::class);

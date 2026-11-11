@@ -19,7 +19,7 @@ class ProductPageController extends Controller
             ->whereHas('seller', fn ($query) => $query->where('status', Seller::STATUS_APPROVED))
             ->with([
                 'category:id,name,slug',
-                'seller:id,store_name,slug',
+                'seller:id,user_id,store_name,slug,status',
                 'variants' => fn ($query) => $query->orderBy('id'),
                 'media',
                 'reviews' => fn ($query) => $query
@@ -41,6 +41,7 @@ class ProductPageController extends Controller
                 'categoryName' => $product->category->name,
                 'categorySlug' => $product->category->slug,
                 'sellerName' => $product->seller->store_name,
+                'sellerSlug' => $product->seller->slug,
                 'averageRating' => round((float) ($product->average_rating ?? 0), 1),
                 'reviewCount' => (int) $product->reviews_count,
                 'images' => $this->images($product),
@@ -61,6 +62,7 @@ class ProductPageController extends Controller
                     'createdAt' => $review->created_at->toDateString(),
                 ])->all(),
             ],
+            'canAddToCart' => $request->user() === null || $request->user()->canShop(),
             'canUploadImages' => $request->user()?->can('uploadMedia', $product) ?? false,
         ]);
     }

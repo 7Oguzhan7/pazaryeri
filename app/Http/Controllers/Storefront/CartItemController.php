@@ -16,6 +16,8 @@ class CartItemController extends Controller
 {
     public function store(Request $request): RedirectResponse
     {
+        abort_unless($request->user() === null || $request->user()->canShop(), 403);
+
         $validated = $request->validate([
             'variant_id' => ['required', 'integer', 'exists:product_variants,id'],
             'quantity' => ['required', 'integer', 'min:1', 'max:99'],
@@ -60,6 +62,6 @@ class CartItemController extends Controller
             }
         });
 
-        return back()->with('status', 'cart-added');
+        return to_route('cart.show')->with('status', 'cart-added');
     }
 }

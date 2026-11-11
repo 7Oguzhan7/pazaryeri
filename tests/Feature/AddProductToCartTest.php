@@ -9,6 +9,7 @@ use App\Models\Seller;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AddProductToCartTest extends TestCase
@@ -17,14 +18,14 @@ class AddProductToCartTest extends TestCase
 
     public function test_customer_can_add_a_product_variant_to_their_cart(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createCustomer();
         $product = $this->createProduct(stock: 5);
         $variant = $product->variants()->firstOrFail();
 
         $this->actingAs($user)->post(route('cart.items.store'), [
             'variant_id' => $variant->id,
             'quantity' => 2,
-        ])->assertRedirect();
+        ])->assertRedirect(route('cart.show'));
 
         $cart = Cart::query()->where('user_id', $user->id)->firstOrFail();
         $this->assertDatabaseHas('cart_items', [
@@ -32,11 +33,21 @@ class AddProductToCartTest extends TestCase
             'variant_id' => $variant->id,
             'quantity' => 2,
         ]);
+
+        $this->actingAs($user)->get(route('cart.show'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Storefront/Cart/Show')
+                ->where('cartCount', 2)
+                ->where('subtotal', '200.00')
+                ->where('items.0.productName', 'Test Ürünü')
+                ->where('items.0.quantity', 2)
+                ->where('items.0.lineTotal', '200.00'));
     }
 
     public function test_adding_an_existing_variant_increments_its_cart_quantity(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createCustomer();
         $product = $this->createProduct(stock: 5);
         $variant = $product->variants()->firstOrFail();
         $cart = Cart::query()->create(['user_id' => $user->id]);
@@ -57,7 +68,7 @@ class AddProductToCartTest extends TestCase
 
     public function test_customer_cannot_add_more_units_than_available_stock(): void
     {
-        $user = User::factory()->create();
+        $user = $this->createCustomer();
         $product = $this->createProduct(stock: 2);
 
         $this->actingAs($user)->from('/')->post(route('cart.items.store'), [
@@ -80,7 +91,7 @@ class AddProductToCartTest extends TestCase
                 '_token' => 'test-token',
                 'variant_id' => $variant->id,
                 'quantity' => 1,
-            ])->assertRedirect();
+            ])->assertRedirect(route('cart.show'));
 
         $this->assertDatabaseHas('carts', [
             'user_id' => null,
@@ -90,6 +101,35 @@ class AddProductToCartTest extends TestCase
             'variant_id' => $variant->id,
             'quantity' => 1,
         ]);
+
+    }
+
+    public function test_admin_cannot_add_a_variant_to_a_shopping_cart(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(Role::findOrCreate('admin', 'web'));
+        $product = $this->createProduct(stock: 5);
+
+        $this->actingAs($admin)->post(route('cart.items.store'), [
+            'variant_id' => $product->variants()->firstOrFail()->id,
+            'quantity' => 1,
+        ])->assertForbidden();
+
+        $this->assertDatabaseCount('carts', 0);
+    }
+
+    public function test_seller_cannot_add_a_variant_to_a_shopping_cart(): void
+    {
+        $seller = User::factory()->create();
+        $seller->assignRole(Role::findOrCreate('seller', 'web'));
+        $product = $this->createProduct(stock: 5);
+
+        $this->actingAs($seller)->post(route('cart.items.store'), [
+            'variant_id' => $product->variants()->firstOrFail()->id,
+            'quantity' => 1,
+        ])->assertForbidden();
+
+        $this->assertDatabaseCount('carts', 0);
     }
 
     public function test_product_detail_updates_the_selected_variant_without_a_page_reload(): void
@@ -107,14 +147,36 @@ class AddProductToCartTest extends TestCase
         $this->get(route('products.show', $product->slug))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
+                ->where('canAddToCart', true)
                 ->where('product.variants.0.activePrice', '100.00')
                 ->where('product.variants.1.activePrice', '200.00')
                 ->where('product.variants.1.stock', 3));
     }
 
+    public function test_seller_dashboard_links_to_the_sellers_own_product_image_management(): void
+    {
+        $product = $this->createProduct(stock: 5);
+        $sellerUser = $product->seller->user;
+
+        $this->actingAs($sellerUser)->get(route('seller.dashboard'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Seller/Dashboard')
+                ->where('products.0.name', 'Test Ürünü')
+                ->where('products.0.slug', 'test-urunu'));
+
+        $this->actingAs($sellerUser)->get(route('products.show', $product->slug))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('auth.user.id', $sellerUser->id)
+                ->where('canAddToCart', false)
+                ->where('canUploadImages', true));
+    }
+
     private function createProduct(int $stock): Product
     {
-        $sellerUser = User::factory()->create();
+        $sellerUser = User::factory()->create(['email_verified_at' => now()]);
+        $sellerUser->assignRole(Role::findOrCreate('seller', 'web'));
         $seller = Seller::query()->create([
             'user_id' => $sellerUser->id,
             'store_name' => 'Test Mağazası',
@@ -142,5 +204,13 @@ class AddProductToCartTest extends TestCase
         ]);
 
         return $product;
+    }
+
+    private function createCustomer(): User
+    {
+        $customer = User::factory()->create();
+        $customer->assignRole(Role::findOrCreate('customer', 'web'));
+
+        return $customer;
     }
 }

@@ -2,37 +2,38 @@
 
 namespace App\Http\Controllers\Storefront;
 
+use App\Actions\Storefront\GetProductFilterOptions;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Storefront\CatalogFilterRequest;
 use App\Http\Resources\ProductCardResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductVariant;
-use App\Models\Seller;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class CategoryPageController extends Controller
 {
-    public function __invoke(Request $request, string $slug): Response
-    {
+    public function __invoke(
+        CatalogFilterRequest $request,
+        string $slug,
+        GetProductFilterOptions $filterOptions,
+    ): Response {
         $category = Category::query()
             ->with('children:id,parent_id,name,slug,sort')
             ->where('slug', $slug)
             ->firstOrFail();
 
         $categoryIds = [$category->id, ...$category->children->pluck('id')->all()];
-        $sort = $request->string('sort')->toString();
-        $sort = in_array($sort, ['price_asc', 'price_desc', 'newest', 'rating'], true)
-            ? $sort
-            : 'newest';
+        $sort = $request->catalogSort();
+        $filters = $request->catalogFilters();
+        $filters['category'] = null;
 
         $productsQuery = Product::query()
             ->whereIn('category_id', $categoryIds)
-            ->where('status', 'aktif')
-            ->whereHas('seller', fn ($query) => $query->where('status', Seller::STATUS_APPROVED))
-            ->whereHas('variants', fn ($query) => $query->where('stock', '>', 0))
+            ->storefrontAvailable()
+            ->withStorefrontFilters($filters)
             ->with([
                 'variants' => fn ($query) => $query->where('stock', '>', 0),
                 'media',
@@ -68,6 +69,16 @@ class CategoryPageController extends Controller
                 ]),
             ],
             'sort' => $sort,
+            'filters' => [
+                'category' => null,
+                'brand' => $filters['brand'],
+                'min' => $filters['min'],
+                'max' => $filters['max'],
+                'color' => $filters['color'],
+                'size' => $filters['size'],
+                'rating' => $filters['rating'],
+            ],
+            'filterOptions' => $filterOptions->handle(),
             'products' => $this->paginatedProducts($products),
         ]);
     }

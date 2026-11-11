@@ -11,7 +11,11 @@ class Seller extends Model
 {
     use HasFactory;
 
+    public const STATUS_PENDING = 'beklemede';
+
     public const STATUS_APPROVED = 'onayli';
+
+    public const STATUS_REJECTED = 'reddedildi';
 
     protected $fillable = [
         'user_id',
